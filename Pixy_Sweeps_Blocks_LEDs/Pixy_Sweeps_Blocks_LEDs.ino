@@ -65,15 +65,6 @@ void loop()
 
   if (blocks)                 // If there are blocks detected...
   {
-    //   Serial.print("YES");
-    //i++;
-
-    // do this (print) every 50 frames because printing every
-    // frame would bog down the Arduino
-    //   if (i % 50 == 0)
-    //   {
-    //   sprintf(buf, "Detected %d:\n", blocks);
-    //   Serial.print(buf);                          // Prints number of color signatures detected
     for (j = 0; j < blocks; j++)
     {
       // sprintf(buf, "  block %d: ", j);
@@ -129,7 +120,7 @@ void loop()
       }
     }
   }
-  //}
+  
   else {
     Serial.println("None");
     digitalWrite(Green, LOW);    // LED
@@ -159,12 +150,6 @@ void loop()
     }
   }
 
-  //i++;
-
-  // do this (print) every 50 frames because printing every
-  // frame would bog down the Arduino
-  //if (i % 50 == 0)
-  //{
     Serial.print("Block Color: ");
     Serial.println(color);
     Serial.print("Block Size: ");
@@ -175,7 +160,6 @@ void loop()
     Serial.print(bigY);
     Serial.println(")");
     Serial.println();
-  //}
 
   // Resets the biggest signature variables
   currentSize = 0;
@@ -185,5 +169,4 @@ void loop()
   bigY = 0;
   color = "None";
 }
-
 
