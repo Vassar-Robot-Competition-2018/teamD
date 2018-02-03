@@ -1,6 +1,7 @@
 // This program uses the Pixy Cam to determine the largest signature block in view, prints the color,
 // size and coordinates of that signature to the serial monitor, and lights up the corresponding
-// colored LED.
+// colored LED. If a color signature is not detected, a servo causes the pixy to sweep back and forth
+// until a color signature is detected. 
 
 /*
    Fields within the pixy.blocks[] array:
@@ -15,16 +16,22 @@
 
 #include <SPI.h>
 #include <Pixy.h>
+#include <Servo.h>
 
 // This is the main Pixy object
 Pixy pixy;
 
-int currentSize = 0,
+Servo camServo;  // create servo object to control a servo
+
+int pos = 0,    // variable to store the servo position
+    dir = 0,    // dictates direction of 'camServo' rotation
+    sweep = 0,
+    currentSize = 0,  // area of current signature
     bigSize = 0,      // Area of biggest signature detected
     bigSig = 0,       // Biggest color signature detected
     bigX = 0,         // X-coordinate of biggest signature
     bigY = 0,         // Y-coordinate of biggest signature
-    minSize = 70,     // Minimum color signature to be considered
+    minSize = 600,     // Minimum color signature to be considered
     Red = 8,          // Assigns Red LED to pin 8
     Yellow = 9,       // Assigns Yellow LED to pin 9
     Green = 10,       // Assigns Green LED to pin 10
@@ -32,6 +39,8 @@ int currentSize = 0,
 
 void setup()
 {
+  camServo.attach(12);  // attaches the servo on pin 12 to the servo object
+
   pinMode(Red, OUTPUT);
   pinMode(Yellow, OUTPUT);
   pinMode(Green, OUTPUT);
@@ -54,33 +63,35 @@ void loop()
 
   if (blocks)                 // If there are blocks detected...
   {
+    //   Serial.print("YES");
     i++;
 
     // do this (print) every 50 frames because printing every
     // frame would bog down the Arduino
-    if (i % 50 == 0)
+    //   if (i % 50 == 0)
+    //   {
+    //   sprintf(buf, "Detected %d:\n", blocks);
+    //   Serial.print(buf);                          // Prints number of color signatures detected
+    for (j = 0; j < blocks; j++)
     {
-      //   sprintf(buf, "Detected %d:\n", blocks);
-      //   Serial.print(buf);                          // Prints number of color signatures detected
-      for (j = 0; j < blocks; j++)
+      // sprintf(buf, "  block %d: ", j);
+      // Serial.print(buf);
+      //  pixy.blocks[j].print();                    // Prints information on each detected signature
+
+      currentSize = ((pixy.blocks[j].width) * (pixy.blocks[j].height));
+
+      // Updates the biggest signature variables if the current signature is bigger than the previous biggest signature
+      if (currentSize > bigSize)
       {
-        // sprintf(buf, "  block %d: ", j);
-        // Serial.print(buf);
-        //  pixy.blocks[j].print();                    // Prints information on each detected signature
-
-        currentSize = ((pixy.blocks[j].width) * (pixy.blocks[j].height));
-
-
-        // Updates the biggest signature variables if the current signature is bigger than the previous biggest signature
-        if (currentSize > bigSize)
-        {
-          bigSize = currentSize;
-          bigSig = pixy.blocks[j].signature;
-          bigX = pixy.blocks[j].x,
-          bigY = pixy.blocks[j].y;
-        }
+        bigSize = currentSize;
+        bigSig = pixy.blocks[j].signature;
+        bigX = pixy.blocks[j].x,
+        bigY = pixy.blocks[j].y;
       }
+    }
 
+    if (bigSize > minSize)
+    {
       Serial.print("Block Color: ");
 
       //Turns on the colored LED that matches the biggest signature
@@ -125,22 +136,44 @@ void loop()
       Serial.print(bigY);
       Serial.println(")");
       Serial.println();
-
-      if (bigSize < minSize)
-      {
-        digitalWrite(Red, LOW);    // LED
-        digitalWrite(Yellow, LOW);    // LED
-        digitalWrite(Green, LOW);    // LED
-        digitalWrite(Blue, LOW);    // LED
-      }
-
-      // Resets the biggest signature variables
-      currentSize = 0;
-      bigSize = 0;
-      bigSig = 0;
-      bigX = 0;
-      bigY = 0;
     }
   }
+  //}
+  else {
+    Serial.println("None");
+    digitalWrite(Green, LOW);    // LED
+    digitalWrite(Red, LOW);    // LED
+    digitalWrite(Yellow, LOW);    // LED
+    digitalWrite(Blue, LOW);    // LED
+
+    if (dir == 0)   // dir 0 sweeps from left to right
+    {
+      pos += 1;
+      camServo.write(pos);
+      delay(20);
+      if (pos == 180)
+      {
+        dir = 1;
+      }
+    }
+    else if (dir == 1) // dir 1 sweeps from right to left
+    {
+      pos -= 1;
+      camServo.write(pos);
+      delay(20);
+      if (pos == 0)
+      {
+        dir = 0;
+      }
+    }
+  }
+  // Resets the biggest signature variables
+  currentSize = 0;
+  bigSize = 0;
+  bigSig = 0;
+  bigX = 0;
+  bigY = 0;
+  Serial.println("Reset");
 }
+
 
