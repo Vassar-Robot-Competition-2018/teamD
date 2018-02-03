@@ -14,27 +14,25 @@ void setup() {
 
 void loop() {
 
-//  if (dir == 0)   // dir 0 sweeps from left to right
-//  {
-//    pos += 1;
-//    camServo.write(pos);
-//    delay(20);
-//    if (pos == 180)
-//    {
-//      dir = 1;
-//    }
-//  }
-//  else if (dir == 1) // dir 1 sweeps from right to left
-//  {
-//    pos -= 1;
-//    camServo.write(pos);
-//    delay(20);
-//    if (pos == 0)
-//    {
-//      dir = 0;
-//    }
-//  }
-
-camServo.write(180);
+  if (dir == 0)   // dir 0 sweeps from left to right
+  {
+    pos += 1;
+    camServo.write(pos);
+    delay(20);
+    if (pos == 180)
+    {
+      dir = 1;
+    }
+  }
+  else if (dir == 1) // dir 1 sweeps from right to left
+  {
+    pos -= 1;
+    camServo.write(pos);
+    delay(20);
+    if (pos == 0)
+    {
+      dir = 0;
+    }
+  }
 }
 
