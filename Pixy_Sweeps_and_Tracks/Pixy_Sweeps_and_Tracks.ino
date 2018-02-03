@@ -1,7 +1,5 @@
-// This program uses the Pixy Cam to determine the largest signature block in view, prints the color,
-// size and coordinates of that signature to the serial monitor, and lights up the corresponding
-// colored LED. If a color signature is not detected, a servo causes the pixy to sweep back and forth
-// until a color signature is detected.
+// The Pixy Cam sweeps back and forth searching for a signature block. Once a signature block is detected,
+// the Pixy Cam uses a servo to continue tracking the block.
 
 /*
    Fields within the pixy.blocks[] array:
@@ -23,7 +21,7 @@ Pixy pixy;
 
 Servo camServo;  // create servo object to control a servo
 
-int pos = 0,    // variable to store the servo position
+int pos = 90,    // variable to store the servo position
     dir = 0,    // dictates direction of 'camServo' rotation
     sweep = 0,
     currentSize = 0,  // area of current signature
@@ -65,21 +63,8 @@ void loop()
 
   if (blocks)                 // If there are blocks detected...
   {
-    //   Serial.print("YES");
-    //i++;
-
-    // do this (print) every 50 frames because printing every
-    // frame would bog down the Arduino
-    //   if (i % 50 == 0)
-    //   {
-    //   sprintf(buf, "Detected %d:\n", blocks);
-    //   Serial.print(buf);                          // Prints number of color signatures detected
     for (j = 0; j < blocks; j++)
     {
-      // sprintf(buf, "  block %d: ", j);
-      // Serial.print(buf);
-      //  pixy.blocks[j].print();                    // Prints information on each detected signature
-
       currentSize = ((pixy.blocks[j].width) * (pixy.blocks[j].height));
 
       // Updates the biggest signature variables if the current signature is bigger than the previous biggest signature
@@ -127,44 +112,57 @@ void loop()
         digitalWrite(Yellow, LOW);
         digitalWrite(Green, LOW);
       }
-    }
-  }
-  //}
-  else {
-    Serial.println("None");
-    digitalWrite(Green, LOW);    // LED
-    digitalWrite(Red, LOW);    // LED
-    digitalWrite(Yellow, LOW);    // LED
-    digitalWrite(Blue, LOW);    // LED
-
-    if (dir == 0)   // dir 0 sweeps from left to right
-    {
-      pos += 1;
-      camServo.write(pos);
-      delay(10);
-      if (pos == 180)
+      if (bigX > 0)
       {
-        dir = 1;
-      }
-    }
-    else if (dir == 1) // dir 1 sweeps from right to left
-    {
-      pos -= 1;
-      camServo.write(pos);
-      delay(10);
-      if (pos == 0)
-      {
-        dir = 0;
+        if ((bigX - 160) > 0) // if block is on right side of cam view, servo should rotate right (toward 0)
+        {
+          if (pos > 0)
+          {
+            pos -= 3;
+            camServo.write(pos);
+          }
+        }
+        else if ((bigX - 160) < 0) // if block is on left side of cam view, servo should rotate left (toward 180)
+        {
+          if (pos < 180)
+          {
+            pos += 3;
+            camServo.write(pos);
+          }
+        }
       }
     }
   }
+    else {
+      Serial.println("None");
+      digitalWrite(Green, LOW);    // LED
+      digitalWrite(Red, LOW);    // LED
+      digitalWrite(Yellow, LOW);    // LED
+      digitalWrite(Blue, LOW);    // LED
 
-  //i++;
+      if (dir == 0)   // dir 0 sweeps from left to right
+      {
+        pos += 2;
+        camServo.write(pos);
+        delay(10);
+        if (pos == 180)
+        {
+          dir = 1;
+        }
+      }
+      
+      else if (dir == 1) // dir 1 sweeps from right to left
+      {
+        pos -= 2;
+        camServo.write(pos);
+        delay(10);
+        if (pos == 0)
+        {
+          dir = 0;
+        }
+      }
+    }
 
-  // do this (print) every 50 frames because printing every
-  // frame would bog down the Arduino
-  //if (i % 50 == 0)
-  //{
     Serial.print("Block Color: ");
     Serial.println(color);
     Serial.print("Block Size: ");
@@ -175,15 +173,14 @@ void loop()
     Serial.print(bigY);
     Serial.println(")");
     Serial.println();
-  //}
 
-  // Resets the biggest signature variables
-  currentSize = 0;
-  bigSize = 0;
-  bigSig = 0;
-  bigX = 0;
-  bigY = 0;
-  color = "None";
-}
+    // Resets the biggest signature variables
+    currentSize = 0;
+    bigSize = 0;
+    bigSig = 0;
+    bigX = 0;
+    bigY = 0;
+    color = "None";
+  }
 
 
