@@ -4,11 +4,13 @@
 
 #include <Servo.h>
 
-Servo servoL;         // Left motor
-Servo servoR;         // Right motor
-int QRE1113_Pin = 0;  // connected to analog pin 0
+Servo servoL;         // left motor
+Servo servoR;         // right motor
+
+int QRE1113_Pin = 0;  // connect to analog pin 0
 int LED = 5;          // LED
-int QRE_Value = 0;    // Line sensor reading
+int QRE_Value = 0;    // line sensor value
+
 void setup() {
   Serial.begin(9600);
   servoL.attach(50);  // attaches left servo on pin 50
@@ -18,22 +20,22 @@ void setup() {
 
 void loop() {
   QRE_Value = analogRead(QRE1113_Pin);
-  Serial.println(QRE_Value);    // prints line sensor value to serial monitor
+  Serial.println(QRE_Value);  // prints line sensor value to serial monitor
 
   // values less than 400 are treated as white
-  if (QRE_Value >= 400) {   // no white detected
+  if (QRE_Value >= 400) {     // no white detected
     digitalWrite(LED, LOW);
-    servoL.write(45); // forward at half speed
+    servoL.write(45);         // forward at half speed
     servoR.write(135);
-    //   delay(10);
   }
+
   else {  // white detected
-    digitalWrite(LED, HIGH);    // turns on LED
-    servoL.write(135); // backwards at half speed
+    digitalWrite(LED, HIGH);  // turns on LED
+    servoL.write(135);        // backwards at half speed
     servoR.write(45);
-    delay(1000);      // time in milliseconds
-    servoL.write(90); // motors stopped
+    delay(1000);              // time in milliseconds
+    servoL.write(90);         // motors stop
     servoR.write(90);
-    delay(1000);      // time in milliseconds
+    delay(1000);              // time in milliseconds
   }
 }
