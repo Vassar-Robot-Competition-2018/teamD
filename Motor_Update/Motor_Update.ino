@@ -2,7 +2,7 @@
 //
 // This program causes the robot to drive forward until the downward-pointing QRE1113 line sensor detects a white surface.
 // This causes the robot to drive backwards for 1 second, turns for 2 second, and then resume going forward. An LED also
-// lights up when a white surface is detected.
+// lights up when a white surface is detected
 
 #include <Servo.h>
 
