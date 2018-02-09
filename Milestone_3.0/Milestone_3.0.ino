@@ -34,9 +34,9 @@ int QRE1113_Pin = 0,  // connect to analog pin 0
     bigX = 0,         // X-coordinate of biggest signature
     bigY = 0,         // Y-coordinate of biggest signature
     minSize = 600,     // Minimum color signature to be considered
-    speedL = 0,
-    speedR = 0,
     state = 1;
+double speedL = 0,
+       speedR = 0;
 
 const int LED = 5,          // Assigns White LED to pin 5
           Red = 8,          // Assigns Red LED to pin 8
@@ -51,8 +51,8 @@ String color = "None";
 void setup() {
   Serial.begin(9600);
 
-  servoL.attach(50);  // attaches left servo on pin 50
-  servoR.attach(51);  // attaches left servo on pin 51
+  servoL.attach(3);  // attaches left servo on pin 50
+  servoR.attach(2);  // attaches left servo on pin 51
   camServo.attach(12);  // attaches the servo on pin 12 to the servo object
 
   pinMode(LED, OUTPUT);
@@ -86,9 +86,9 @@ void loop() {
 
 /**************************************************/
 
-void motor_update(int speedL, int speedR) {
-  int servoL_speed = (-9) / 10 * speedL + 90;
-  int servoR_speed = 9 / 10 * speedR + 91;
+void motor_update(double L, double R) {
+  double servoL_speed = (L * -0.9) + 90;
+  double servoR_speed = (R * 0.9) + 90;
   servoL.write(servoL_speed);
   servoR.write(servoR_speed);
 }
