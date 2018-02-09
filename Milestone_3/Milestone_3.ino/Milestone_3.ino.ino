@@ -22,8 +22,8 @@ void loop() {
   QRE_Value = analogRead(QRE1113_Pin);
   Serial.println(QRE_Value);  // prints line sensor value to serial monitor
 
-  // values less than 400 are treated as white
-  if (QRE_Value >= 400) {     // no white detected
+  // values less than 100 are treated as white
+  if (QRE_Value >= 100) {     // no white detected
     digitalWrite(LED, LOW);
     servoL.write(45);         // forward at half speed
     servoR.write(136);
