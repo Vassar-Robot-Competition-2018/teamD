@@ -35,7 +35,8 @@ int QRE1113_Pin = 0,  // connect to analog pin 0
     bigY = 0,         // Y-coordinate of biggest signature
     minSize = 600,     // Minimum color signature to be considered
     speedL = 0,
-    speedR = 0;
+    speedR = 0,
+    state = 1;
 
 const int LED = 5,          // Assigns White LED to pin 5
           Red = 8,          // Assigns Red LED to pin 8
@@ -66,13 +67,15 @@ void setup() {
 /**************************************************/
 
 void loop() {
-  while (1) {
+  while (state == 1) {
     if (CheckWhiteLine () == TRUE) {
       WhiteLine ();
     }
     if (CheckBlocks () == TRUE) {   // Turns on the colored LED that matches the biggest signature
       BlockColor ();
-      Track ();
+      motor_update(0, 0);
+      state = 0;
+      //Track ();
     }
     else {
       Sweep ();
