@@ -4,8 +4,8 @@ This past week, our goal was to complete the first two milestones:  1) Get the r
 
 In order to complete the first milestone, we needed a chassis, so we constructed a temporary one out of sheets of foam core. On this chassis, we attached a LiPo battery and two continuous-rotation servo motors and wheels to an Arduino Mega 2560 microcontroller. Here is the code that we used to drive the robot forward and complete first milestone:
 
-'''
 
+```
 #include <Servo.h>
 
 Servo servoL;         // Left motor
@@ -29,14 +29,12 @@ void loop() {
   servoR.write(135);
 
 }
-
-'''
+```
 
 Next, we added a QRE1113 line sensor to our robot. This is a short range analog sensor that  returns lower values when lighter colors are detected and higher values for darker colors. The sensor was place at the front of the robot, pointing downward, almost touching the ground. We found that the robot returned values less than 200 when detecting white and values over 600 when detecting the gray color of the arena, so in our code we used a threshold value of 400. Whenever the sensor read values less than 400, it was programed to back up for one second, stop for one second, and then resume traveling forward. Here is the “loop” part of our code that was used to complete the second milestone:
 
 
-'''
-
+```
 void loop() {
 QRE_Value = analogRead(QRE1113_Pin);
 Serial.println(QRE_Value);  // prints line sensor value to serial monitor
@@ -58,8 +56,7 @@ else {  // white detected
   delay(1000);              // time in milliseconds
 }
 }
-
-'''
+```
 
 Initially, we had the servos receiving power from the “5V” on the microcontroller, but the servos behaved erratically and inconsistently. After switching the servos from “5V” to “Vin”, the servos began responding correctly.
 
