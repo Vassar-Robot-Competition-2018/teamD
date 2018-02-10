@@ -18,7 +18,7 @@ const int White = 5,          // Assigns White LED to pin 5
 
 double Kp = 0.05,
        Ki = 0.0,
-       Kd = 0.01;
+       Kd = 0.02;
 
 int j,
     maxJ,
