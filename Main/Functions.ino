@@ -1,6 +1,6 @@
 // Functions
 //    ColorSensor()
-//    CheckFloor()
+//    WhiteQRE()
 //    MotorUpdate(double, double)
 //    StateCheck()
 //    CheckBlocks()
@@ -17,9 +17,11 @@
 //    IR_Long()
 //    BlockComplete()
 
+
 //checks floor color sensor (up to 20 times per second)
 void ColorSensor() {
-  uint16_t clear, red, green, blue;
+  //uint16_t clear, red, green, blue;
+  int clear, red, green, blue;
 
   tcs.setInterrupt(false);      // turn on LED
   //delay(60);  // takes 50ms to read
@@ -31,34 +33,57 @@ void ColorSensor() {
 //  Serial.print("\tG:\t"); Serial.print(green);
 //  Serial.print("\tB:\t"); Serial.println(blue);
 
-  if(red > (green + blue))
-  quadrant = 1;
+    if (Cgray == 0) {
+      ColorCalibration(clear, red, green, blue);
+    }
   
-  else if((red + green) > (3 * blue))
-  quadrant = 2;
-
-  else if((3 * green) > ((red + blue) * 2))
-  quadrant = 3;
-
-  else if (blue > (2 * red))
-  quadrant = 4;
-  
-  Serial.print("Quadrant color: "); Serial.println(quadrant);
-
-  //  // Figure out some basic hex code for visualization
-  //  uint32_t sum = clear;
-  //  float r, g, b;
-  //  r = red; r /= sum;
-  //  g = green; g /= sum;
-  //  b = blue; b /= sum;
-  //  r *= 256; g *= 256; b *= 256;
-  //  Serial.print("\t");
-  //  Serial.print((int)r, HEX); Serial.print((int)g, HEX); Serial.print((int)b, HEX);
-  //  Serial.println();
+    WhiteCheck(clear);
+    Quadrant(red, green, blue);
 }
 
 
-void CheckFloor() {
+void Quadrant(int r, int g, int b) {
+  if (r > (g + b))  //red
+    quadrant = 1;
+
+  else if ((r + g) > (3 * b))  //yellow
+    quadrant = 2;
+
+  else if ((3 * g) > ((r + b) * 2))  //green
+    quadrant = 3;
+
+  else if (b > (2 * r))  //blue
+    quadrant = 4;
+
+  Serial.print("Quadrant color: ");
+  Serial.println(quadrant);
+}
+
+
+void ColorCalibration(int c, int r, int g, int b) {
+  Cgray = c;
+  Rgray = r;
+  Ggray = g;
+  Bgray = b;
+
+  Serial.print("Color calibration complete");
+}
+
+
+void WhiteCheck(int c) {
+  if (c > (5 * Cgray)) {
+    Serial.println("White Detected");
+
+    DriveReverse();
+    delay(1000);
+
+    RightTurn();
+    delay(2000);
+  }
+}
+
+
+void WhiteQRE() {
   QRE_Val = analogRead(QRE_Pin);
   if (QRE_Val < 100) {
     digitalWrite(White, HIGH); //turns on white LED
@@ -83,7 +108,7 @@ void MotorUpdate(double L, double R) {
 void StateCheck() {
   if (state == 0) { // if searching for block
     DriveForward();
-    Sweep();
+    // Sweep();
   }
 }
 
@@ -307,18 +332,20 @@ void IR_Long() {
   irLong = analogRead(IR_LONG);
   irLongDist = 6206.62 / irLong - 0.1826;
 
-//  Serial.print("Long IR Value: ");  // returns it to the serial monitor
-//  Serial.print(irLong);
-//  Serial.print("     Distance: ");  // returns it to the serial monitor
-//  Serial.print(irLongDist);
-//  Serial.println(" cm");
+  //  Serial.print("Long IR Value: ");  // returns it to the serial monitor
+  //  Serial.print(irLong);
+  //  Serial.print("     Distance: ");  // returns it to the serial monitor
+  //  Serial.print(irLongDist);
+  //  Serial.println(" cm");
 }
+
 
 void BlockComplete() {
   speedL = 0;
   speedR = 0;
   MotorUpdate(speedL, speedR);
   BlockColor();
+  delay(5000);
 }
 
 

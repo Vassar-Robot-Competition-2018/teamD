@@ -42,7 +42,11 @@ float irShort,
       irLong,
       irLongDist;
 
-int QRE_Val = 0,      // white line sensor value
+int Cgray,
+    Rgray,
+    Ggray,
+    Bgray,
+    QRE_Val = 0,      // white line sensor value
     state = 0,
     j,
     maxJ,
@@ -87,10 +91,9 @@ void setup() {
 
 void loop() {
   while (state == 0) {
-    CheckFloor();
+    ColorSensor(); // includes ColorCalibration, WhiteCheck, and Quadrant functions
+  //  CheckBlocks();
     StateCheck();
-    ColorSensor();
-    CheckBlocks();
   }
 
   BlockComplete();
