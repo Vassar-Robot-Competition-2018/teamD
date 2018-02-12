@@ -4,21 +4,24 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
 
-Pixy pixy;        // main Pixy object
-Servo servoL;     // left motor
-Servo servoR;     // right motor
-Servo camServo;   // pixy servo
+Pixy pixy;          // main Pixy object
+Servo servoL;       // left motor
+Servo servoR;       // right motor
+Servo blockServoL;  // left block servo
+Servo blockServoR;  // right block servo
+Servo camServo;     // pixy servo
 
 //Declares constants
-const int QRE_Pin = A0,      // connects line sensor to analog pin 0
-          IR_SHORT = A1,   //A41 has shorter range: 4-30cm
-          IR_LONG = A2,    //A21 has longer range: 10-80cm
-          White = 5,        // assigns White LED to pin 5
-          Red = 8,          // assigns Red LED to pin 8
-          Yellow = 9,       // assigns Yellow LED to pin 9
-          Green = 10,       // assigns Green LED to pin 10
-          Blue = 11,        // assigns Blue LED to pin 8
-          minWidth = 100,   // minimum color block width
+const int QRE_Pin = A0,     // connects line sensor to analog pin 0
+          IR_SHORT = A1,    // A41 has shorter range: 4-30cm
+          IR_LONG = A2,     // A21 has longer range: 10-80cm
+          WHITE = 5,        // assigns White LED to pin 5
+          RED = 8,          // assigns Red LED to pin 8
+          YELLOW = 9,       // assigns Yellow LED to pin 9
+          GREEN = 10,       // assigns Green LED to pin 10
+          BLUE = 11,        // assigns Blue LED to pin 8
+          minWidth = 60,    // minimum color block width
+          stopWidth = 150,  // block width that triggers completion of milestone 3
           pixySP = 160,     // pixy cam setpoint
           servoSP = 90;     // servo setpoint
 
@@ -67,21 +70,30 @@ int Cgray,
     wheelAdj,
     dir = 0,
     sweep = 0,
-    quadrant;
+    quadrant = 0,
+    quadCheck = 0,
+    prev_quadrant,
+    homeQ = 0;
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 
 void setup() {
   servoL.attach(2);  // attaches left servo on pin 2
   servoR.attach(3);  // attaches right servo on pin 3
+  blockServoL.attach(4);
+  blockServoR.attach(4);
   camServo.attach(12);  // attaches the servo on pin 12 to the servo object
+
+  // sets servo initial positions 
   camServo.write(90);
+  blockServoL.write(45);
+  blockServoR.write(135);
   delay(1000);
 
-  pinMode(Red, OUTPUT);
-  pinMode(Yellow, OUTPUT);
-  pinMode(Green, OUTPUT);
-  pinMode(Blue, OUTPUT);
+  pinMode(RED, OUTPUT);
+  pinMode(YELLOW, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(BLUE, OUTPUT);
 
   Serial.begin(9600);
   tcs.begin();
@@ -92,7 +104,7 @@ void setup() {
 void loop() {
   while (state == 0) {
     ColorSensor(); // includes ColorCalibration, WhiteCheck, and Quadrant functions
-  //  CheckBlocks();
+    CheckBlocks();
     StateCheck();
   }
 

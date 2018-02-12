@@ -28,17 +28,24 @@ void ColorSensor() {
   tcs.getRawData(&red, &green, &blue, &clear);
   tcs.setInterrupt(true);  // turn off LED
 
-//  Serial.print("C:\t"); Serial.print(clear);
-//  Serial.print("\tR:\t"); Serial.print(red);
-//  Serial.print("\tG:\t"); Serial.print(green);
-//  Serial.print("\tB:\t"); Serial.println(blue);
+  //  Serial.print("C:\t"); Serial.print(clear);
+  //  Serial.print("\tR:\t"); Serial.print(red);
+  //  Serial.print("\tG:\t"); Serial.print(green);
+  //  Serial.print("\tB:\t"); Serial.println(blue);
 
-    if (Cgray == 0) {
-      ColorCalibration(clear, red, green, blue);
-    }
-  
-    WhiteCheck(clear);
-    Quadrant(red, green, blue);
+  if (Cgray == 0) {
+    ColorCalibration(clear, red, green, blue);
+  }
+
+  WhiteCheck(clear);
+  Quadrant(red, green, blue);
+}
+
+
+void SetHome(int r, int g, int b) {
+  if ((homeQ == 0) && (quadrant != 0)) {
+    homeQ = quadrant;
+  }
 }
 
 
@@ -55,8 +62,15 @@ void Quadrant(int r, int g, int b) {
   else if (b > (2 * r))  //blue
     quadrant = 4;
 
-  Serial.print("Quadrant color: ");
-  Serial.println(quadrant);
+  SetHome(r, g, b);
+
+  if (quadrant != quadCheck) {
+    prev_quadrant = quadCheck;
+    quadCheck = quadrant;
+  }
+
+  //  Serial.print("Quadrant color: ");
+  //  Serial.println(quadrant);
 }
 
 
@@ -86,7 +100,7 @@ void WhiteCheck(int c) {
 void WhiteQRE() {
   QRE_Val = analogRead(QRE_Pin);
   if (QRE_Val < 100) {
-    digitalWrite(White, HIGH); //turns on white LED
+    digitalWrite(WHITE, HIGH); //turns on white LED
 
     DriveReverse();
     delay(1000);
@@ -129,23 +143,20 @@ void CheckBlocks() {
 
   blocks = pixy.getBlocks();
 
-  if (blocks && (irLongDist < 50)) //if something is detected
-  {
+  if (blocks) { //if a color sig is detected by pixy cam
     for (j = 0; j < blocks; j++) { //find the largest object that fits the signature
       prod = pixy.blocks[j].width * pixy.blocks[j].height;
-      //     skip = 0;
       if (prod > maxProd)
         maxJ = j;
     }
   }
 
-  if (pixy.blocks[maxJ].width > minWidth) {
+  if (pixy.blocks[maxJ].width > minWidth) { // if color sig is big enough and object is detected by the IR sensor
     maxSig = pixy.blocks[maxJ].signature;
     max_X = pixy.blocks[maxJ].x;
     max_Y = pixy.blocks[maxJ].y;
     maxHeight = pixy.blocks[maxJ].height;
     maxWidth = pixy.blocks[maxJ].width;
-    state = 1;
 
     BlockColor();
     PixyPID();
@@ -154,21 +165,28 @@ void CheckBlocks() {
 
   else {
     //Serial.println("None");
-    digitalWrite(Red, LOW);    // LED
-    digitalWrite(Yellow, LOW);    // LED
-    digitalWrite(Green, LOW);    // LED
-    digitalWrite(Blue, LOW);    // LED
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
     state = 0;
     StateCheck();
   }
 
-  //Serial.print("Block Position: (");
-  //Serial.print(max_X, max_Y);
-  //Serial.println(")");
-  //Serial.print("Block Dimensions: ");
-  //Serial.print(maxWidth);
-  //Serial.print(" x ");
-  //Serial.println(maxWidth);
+  //  Serial.print("Block Position: (");
+  //  Serial.print(max_X, max_Y);
+  //  Serial.println(")");
+  //  Serial.print("Block Dimensions: ");
+  //  Serial.print(maxWidth);
+  //  Serial.print(" x ");
+  //  Serial.println(maxWidth);
+
+  Serial.print("maxWidth: "); Serial.println(maxWidth);
+  Serial.print("irLongDist: "); Serial.println(irLongDist);
+
+  if ((irLongDist < 50) && (maxWidth > stopWidth)) {
+    state = 1;
+  }
 
   delay(30);
 }
@@ -176,34 +194,34 @@ void CheckBlocks() {
 void BlockColor () {
   if (maxSig == 1) {
     //Serial.println("Red");
-    digitalWrite(Red, HIGH);    // LED
-    digitalWrite(Yellow, LOW);    // LED
-    digitalWrite(Green, LOW);    // LED
-    digitalWrite(Blue, LOW);    // LED
+    digitalWrite(RED, HIGH);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
   }
 
   else if (maxSig == 2) {
     //Serial.println("Yellow");
-    digitalWrite(Red, LOW);    // LED
-    digitalWrite(Yellow, HIGH);    // LED
-    digitalWrite(Green, LOW);    // LED
-    digitalWrite(Blue, LOW);    // LED
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, HIGH);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
   }
 
   else if (maxSig == 3) {
     //Serial.println("Green");
-    digitalWrite(Red, LOW);    // LED
-    digitalWrite(Yellow, LOW);    // LED
-    digitalWrite(Green, HIGH);    // LED
-    digitalWrite(Blue, LOW);    // LED
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, HIGH);    // LED
+    digitalWrite(BLUE, LOW);    // LED
   }
 
   else if (maxSig == 4) {
     //Serial.println("Blue");
-    digitalWrite(Red, LOW);    // LED
-    digitalWrite(Yellow, LOW);    // LED
-    digitalWrite(Green, LOW);    // LED
-    digitalWrite(Blue, HIGH);    // LED
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, HIGH);    // LED
   }
 }
 
@@ -330,7 +348,13 @@ void IR_Short() {
 
 void IR_Long() {
   irLong = analogRead(IR_LONG);
-  irLongDist = 6206.62 / irLong - 0.1826;
+
+  if ((irLong > 70) && (irLong < 700)) {
+    irLongDist = 6206.62 / irLong - 0.1826;
+  }
+  else {
+    irLongDist = 100;
+  }
 
   //  Serial.print("Long IR Value: ");  // returns it to the serial monitor
   //  Serial.print(irLong);
@@ -340,11 +364,30 @@ void IR_Long() {
 }
 
 
+void GrabBlock() {
+  blockServoL.write(135);
+  blockServoR.write(45);
+  delay(1000);
+}
+
+void ReleaseBlock() {
+  blockServoL.write(135);
+  blockServoR.write(45);
+  DriveReverse();
+  delay(2000);
+  RightTurn();
+  delay(2000);
+}
+
+
 void BlockComplete() {
   speedL = 0;
   speedR = 0;
   MotorUpdate(speedL, speedR);
   BlockColor();
+  digitalWrite(WHITE, HIGH);    // LED
+  Serial.print("maxWidth: "); Serial.println(maxWidth);
+  Serial.print("irLongDist: "); Serial.println(irLongDist);
   delay(5000);
 }
 
