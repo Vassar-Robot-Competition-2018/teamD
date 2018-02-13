@@ -15,15 +15,18 @@ Servo camServo;     // pixy servo
 const int QRE_Pin = A0,     // connects line sensor to analog pin 0
           IR_SHORT = A1,    // A41 has shorter range: 4-30cm
           IR_LONG = A2,     // A21 has longer range: 10-80cm
+          RED = 6,          // assigns Red LED to pin 1
+          YELLOW = 2,       // assigns Yellow LED to pin 2
+          GREEN = 3,        // assigns Green LED to pin 3
+          BLUE = 4,         // assigns Blue LED to pin 4
           WHITE = 5,        // assigns White LED to pin 5
-          RED = 8,          // assigns Red LED to pin 8
-          YELLOW = 9,       // assigns Yellow LED to pin 9
-          GREEN = 10,       // assigns Green LED to pin 10
-          BLUE = 11,        // assigns Blue LED to pin 8
-          minWidth = 60,    // minimum color block width
-          stopWidth = 150,  // block width that triggers completion of milestone 3
+          minWidth = 25,    // minimum color block width
+          stopWidth = 40,   // block width required for completion of milestone 3
+          stopDist = 50,    // IR distance required for completion of milestone 3
           pixySP = 160,     // pixy cam setpoint
-          servoSP = 90;     // servo setpoint
+          servoSP = 90,     // servo setpoint
+          servoMin = 45,    // min pixy servo position
+          servoMax = 135;   // max pixy servo position
 
 double speedL = 0.0,
        speedR = 0.0,
@@ -78,13 +81,13 @@ int Cgray,
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 
 void setup() {
-  servoL.attach(2);  // attaches left servo on pin 2
-  servoR.attach(3);  // attaches right servo on pin 3
-  blockServoL.attach(4);
-  blockServoR.attach(4);
+  servoL.attach(8);  // attaches left wheel servo on pin 8
+  servoR.attach(9);  // attaches right wheel servo on pin 9
+  blockServoL.attach(10); // attaches left block servo on pin 10
+  blockServoR.attach(11); // attaches right block servo on pin 11
   camServo.attach(12);  // attaches the servo on pin 12 to the servo object
 
-  // sets servo initial positions 
+  // sets servo initial positions
   camServo.write(90);
   blockServoL.write(45);
   blockServoR.write(135);

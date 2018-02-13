@@ -28,10 +28,10 @@ void ColorSensor() {
   tcs.getRawData(&red, &green, &blue, &clear);
   tcs.setInterrupt(true);  // turn off LED
 
-  //  Serial.print("C:\t"); Serial.print(clear);
-  //  Serial.print("\tR:\t"); Serial.print(red);
-  //  Serial.print("\tG:\t"); Serial.print(green);
-  //  Serial.print("\tB:\t"); Serial.println(blue);
+//  Serial.print("C:\t"); Serial.print(clear);
+//  Serial.print("\tR:\t"); Serial.print(red);
+//  Serial.print("\tG:\t"); Serial.print(green);
+//  Serial.print("\tB:\t"); Serial.println(blue);
 
   if (Cgray == 0) {
     ColorCalibration(clear, red, green, blue);
@@ -53,7 +53,7 @@ void Quadrant(int r, int g, int b) {
   if (r > (g + b))  //red
     quadrant = 1;
 
-  else if ((r + g) > (3 * b))  //yellow
+  else if ((r + g) > (4 * b))  //yellow
     quadrant = 2;
 
   else if ((3 * g) > ((r + b) * 2))  //green
@@ -69,8 +69,8 @@ void Quadrant(int r, int g, int b) {
     quadCheck = quadrant;
   }
 
-  //  Serial.print("Quadrant color: ");
-  //  Serial.println(quadrant);
+//    Serial.print("Quadrant color: ");
+//    Serial.println(quadrant);
 }
 
 
@@ -85,8 +85,8 @@ void ColorCalibration(int c, int r, int g, int b) {
 
 
 void WhiteCheck(int c) {
-  if (c > (5 * Cgray)) {
-    Serial.println("White Detected");
+  if (c > (4 * Cgray)) {  // maybe 4*Cgray when white tape is used
+ //   Serial.println("White Detected");
 
     DriveReverse();
     delay(1000);
@@ -97,18 +97,18 @@ void WhiteCheck(int c) {
 }
 
 
-void WhiteQRE() {
-  QRE_Val = analogRead(QRE_Pin);
-  if (QRE_Val < 100) {
-    digitalWrite(WHITE, HIGH); //turns on white LED
-
-    DriveReverse();
-    delay(1000);
-
-    RightTurn();
-    delay(2000);
-  }
-}
+//void WhiteQRE() {
+//  QRE_Val = analogRead(QRE_Pin);
+//  if (QRE_Val < 100) {
+//    digitalWrite(WHITE, HIGH); //turns on white LED
+//
+//    DriveReverse();
+//    delay(1000);
+//
+//    RightTurn();
+//    delay(2000);
+//  }
+//}
 
 
 void MotorUpdate(double L, double R) {
@@ -122,7 +122,7 @@ void MotorUpdate(double L, double R) {
 void StateCheck() {
   if (state == 0) { // if searching for block
     DriveForward();
-    // Sweep();
+    Sweep();
   }
 }
 
@@ -160,7 +160,7 @@ void CheckBlocks() {
 
     BlockColor();
     PixyPID();
-    WheelPID();
+   // WheelPID();
   }
 
   else {
@@ -184,7 +184,7 @@ void CheckBlocks() {
   Serial.print("maxWidth: "); Serial.println(maxWidth);
   Serial.print("irLongDist: "); Serial.println(irLongDist);
 
-  if ((irLongDist < 50) && (maxWidth > stopWidth)) {
+  if ((irLongDist < stopDist) && (maxWidth > stopWidth)) {
     state = 1;
   }
 
@@ -236,11 +236,11 @@ void PixyPID() {
   pos = lastPos + servoAdj;
   lastPos = pos;
 
-  if (pos > 180)
-    pos = 180;
+  if (pos > servoMax)
+    pos = servoMax;
 
-  else if (pos < 0)
-    pos = 0;
+  else if (pos < servoMin)
+    pos = servoMin;
 
   camServo.write(pos);
   delay(20);
@@ -254,8 +254,8 @@ void WheelPID() {
 
   wheelAdj = wheelKp * servoError + wheelKd * (servoError - lastServoError);
   lastServoError = servoError;
-  speedL = baseSpeedL - wheelAdj;   // not sure yet if it's L minus adjust or R minus adjust
-  speedR = baseSpeedR + wheelAdj;
+  speedL = baseSpeedL + wheelAdj;   // not sure yet if it's L minus adjust or R minus adjust
+  speedR = baseSpeedR - wheelAdj;
 
   if (speedL > maxSpeedL)
     speedL = maxSpeedL;
@@ -314,7 +314,7 @@ void Sweep() {
     pos += 2;
     camServo.write(pos);
     delay(10);
-    if (pos == 180)
+    if (pos >= servoMax)
     {
       dir = 1;
     }
@@ -325,7 +325,7 @@ void Sweep() {
     pos -= 2;
     camServo.write(pos);
     delay(10);
-    if (pos == 0)
+    if (pos <= servoMin)
     {
       dir = 0;
     }
