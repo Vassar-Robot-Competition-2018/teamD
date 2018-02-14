@@ -9,7 +9,7 @@ int pos = 0,    // variable to store the servo position
     dir = 0;    // dictates direction of 'camServo' rotation
 
 void setup() {
-  camServo.attach(12);  // attaches the servo on pin 12 to the servo object
+  camServo.attach(9);  // attaches the servo on pin 12 to the servo object
 }
 
 void loop() {
@@ -18,7 +18,7 @@ void loop() {
   {
     pos += 1;
     camServo.write(pos);
-    delay(20);
+   // delay(10);
     if (pos == 180)
     {
       dir = 1;
@@ -28,7 +28,7 @@ void loop() {
   {
     pos -= 1;
     camServo.write(pos);
-    delay(20);
+    // delay(10);
     if (pos == 0)
     {
       dir = 0;

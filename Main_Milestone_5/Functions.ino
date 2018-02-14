@@ -67,8 +67,17 @@ void Quadrant(int r, int g, int b) {
   if (quadrant != quadCheck) {
     prev_quadrant = quadCheck;
     quadCheck = quadrant;
-  }
 
+  }
+ digitalWrite((2), LOW);    // LED
+ digitalWrite((3), LOW);    // LED
+ digitalWrite((4), LOW);    // LED
+ digitalWrite((5), LOW);    // LED
+  digitalWrite((quadrant + 1), HIGH);    // LED
+  
+  if(quadrant != 0) {
+  DriveStop();
+  delay(5000);}
   Serial.print("Quadrant color: ");
   Serial.println(quadrant);
 }
@@ -122,7 +131,7 @@ void MotorUpdate(double L, double R) {
 void StateCheck() {
   if (state == 0) { // if searching for block
     DriveForward();
-    Sweep();
+    //Sweep();
   }
 }
 
@@ -159,9 +168,9 @@ void CheckBlocks() {
     maxWidth = pixy.blocks[maxJ].width;
 
     BlockColor();
-    Sweep();
-   // PixyPID();
-   // WheelPID();
+    // Sweep();
+    // PixyPID();
+    // WheelPID();
   }
 
   else {

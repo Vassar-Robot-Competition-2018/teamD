@@ -105,12 +105,12 @@ void setup() {
 
 
 void loop() {
-  while (state == 0) {
+  //while (state == 0) {
     ColorSensor(); // includes ColorCalibration, WhiteCheck, and Quadrant functions
-    CheckBlocks();
+    //CheckBlocks();
     StateCheck();
   }
 
-  BlockComplete();
-}
+  //BlockComplete();
+//}
 
