@@ -13,7 +13,7 @@ Servo camServo;     // pixy servo
 
 //Declares constants
 const int IR_SHORT = A1,    // A41 has shorter range: 4-30cm
-          IR_FRONT = A2,    // A21 has longer range: 10-80cm
+          IR_PIXY = A2,    // A21 has longer range: 10-80cm
           IR_LEFT = A3,     // Left IR 10-80cm
           IR_RIGHT = A4,    // Right IR 10-80cm
           RED = 2,          // assigns Red LED to pin 1
@@ -35,7 +35,7 @@ const int IR_SHORT = A1,    // A41 has shorter range: 4-30cm
 float baseSpeedL = 50,
       baseSpeedR = 50,
 
-      panKp = 0.025,
+      panKp = 0.03,
       panKi = 0.0,
       panKd = 0.3,
       prevCamError = 0, // previous error for pan PID
@@ -59,11 +59,11 @@ float baseSpeedL = 50,
       lastServoError,
 
       irShort,
-      irFront,
+      irPixy,
       irLeft,
       irRight,
       irShortDist = 100,
-      irFrontDist = 100,
+      irPixyDist = 100,
       irLeftDist = 100,
       irRightDist = 100;
 
@@ -110,14 +110,6 @@ void setup() {
   blockServoR.attach(11); // attaches right block servo on pin 11
   camServo.attach(12);  // attaches the servo on pin 12 to the servo object
 
-  // sets servo initial positions
-
-  blockServoL.write(45);
-  blockServoR.write(135);
-  servoL.write(92);
-  servoR.write(92);
-  camServo.write(panPos);
-
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
   pinMode(GREEN, OUTPUT);
@@ -126,36 +118,23 @@ void setup() {
   Serial.begin(9600);
   tcs.begin();
   pixy.init();
+
+  // sets servo initial positions
+
+  blockServoL.write(45);
+  blockServoR.write(135);
+  servoL.write(92);
+  servoR.write(92);
+  camServo.write(panPos);
+  delay(3000);
 }
 
-
-//void loop() {
-//  ColorSensor(); // includes ColorCalibration, WhiteCheck, and Quadrant functions
-//  IR_Short();
-//  IR_Front();
-//
-//  if (irShortDist > captured) {
-//
-//    CheckBlocks();
-//    //    StateCheck();
-//  }
-//
-//  else
-//  {
-//    // IR_Front();
-//    DriveForward();
-//    digitalWrite(WHITE, LOW);    // LED
-//    //  BlockComplete();
-//  }
-//}
 
 void loop() {
-  camServo.write(panPos);
-  delay(5000);
 
-  while (1 == 1) {
+//    Serial.print("IR Distance: ");
+//    Serial.println(irShortDist);
     CheckBlocks();
-    //Scan();
   }
-}
+
 

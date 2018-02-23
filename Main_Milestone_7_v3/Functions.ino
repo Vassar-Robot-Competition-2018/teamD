@@ -4,7 +4,7 @@
 
 
 //void PID_Pixy_Wheels() {
-//  if (irFrontDist <= minDist) {
+//  if (irPixyDist <= minDist) {
 //
 //    digitalWrite(WHITE, HIGH);    // LED
 //    pixyError = pixySP - max_X;
@@ -245,68 +245,6 @@ void DriveStop() {
 }
 
 
-//void Sweep() {
-//  if (dir == 0)   // dir 0 sweeps from left to right
-//  {
-//    pos += 2;
-//    camServo.write(pos);
-//    delay(10);
-//    if (pos >= servoMax)
-//    {
-//      dir = 1;
-//    }
-//  }
-//
-//  else if (dir == 1) // dir 1 sweeps from right to left
-//  {
-//    pos -= 2;
-//    camServo.write(pos);
-//    delay(10);
-//    if (pos <= servoMin)
-//    {
-//      dir = 0;
-//    }
-//  }
-//}
-
-
-void IR_Short() {
-  irShort = analogRead(IR_SHORT);
-
-  if ((irShort > 100) && (irShort < 700)) {
-    irShortDist = 3187.58 / irShort - 1.6016;
-  }
-  else {
-    irShortDist = 100;
-
-    //    Serial.print("Short IR Value: ");  // returns it to the serial monitor
-    //    Serial.print(irShort);
-    //    Serial.print("     Distance: ");  // returns it to the serial monitor
-    //    Serial.print(irShortDist);
-    //    Serial.println(" cm");
-    //    Serial.println();
-  }
-}
-
-
-void IR_Front() {
-  irFront = analogRead(IR_FRONT);
-
-  if ((irFront > 70) && (irFront < 700)) {
-    irFrontDist = 6206.62 / irFront - 0.1826;
-  }
-  else {
-    irFrontDist = 100;
-  }
-
-  //  Serial.print("Long IR Value: ");  // returns it to the serial monitor
-  //  Serial.print(irFront);
-  //  Serial.print("     Distance: ");  // returns it to the serial monitor
-  //  Serial.print(irFrontDist);
-  //  Serial.println(" cm");
-}
-
-
 void GrabBlock() {
   blockServoL.write(135);
   blockServoR.write(45);
@@ -325,7 +263,7 @@ void ReleaseBlock() {
 
 
 void HoldingBlock() {
-  if (irFrontDist <= captured)
+  if (irPixyDist <= captured)
     DriveForward();
 }
 
@@ -337,7 +275,7 @@ void BlockComplete() {
   BlockColor();
   digitalWrite(WHITE, HIGH);    // LED
   Serial.print("maxWidth: "); Serial.println(maxWidth);
-  Serial.print("irFrontDist: "); Serial.println(irFrontDist);
+  Serial.print("irPixyDist: "); Serial.println(irPixyDist);
   delay(5000);
 }
 
@@ -348,6 +286,27 @@ void MotorUpdate(double L, double R) {
   servoL.write(servoL_speed);
   servoR.write(servoR_speed);
 }
+
+
+void IR_Check()
+{
+  int irShort = analogRead(IR_SHORT);
+  irShortDist = 3187.58 / irShort - 1.6016;
+  irShortDist = constrain(irShortDist, 3, 30);
+
+  //  int irPixy = analogRead(IR_PIXY);
+  //  irPixyDist = 6206.62 / irPixy - 0.1826;
+  //  irPixyDist = constrain(irPixyDist, 10, 80);
+  //
+  //  int irLeft = analogRead(IR_LEFT);
+  //  irLeftDist = 6206.62 / irLeft - 0.1826;
+  //  irLeftDist = constrain(irLeftDist, 10, 80);
+  //
+  //  int irRight = analogRead(IR_RIGHT);
+  //  irRightDist = 6206.62 / irRight - 0.1826;
+  //  irRightDist = constrain(irRightDist, 10, 80);
+}
+
 
 void CheckBlocks() {
   static int i = 0;
@@ -360,11 +319,13 @@ void CheckBlocks() {
   max_Y = 0;
   maxWidth = 0;
   maxHeight = 0;
+  prod = 0;
+  maxProd = 0;
 
   blocks = pixy.getBlocks();
 
   if (blocks) { //if a color sig is detected by pixy cam
-    for (j = 0; j < blocks; j++) { //find the largest object that fits the signature
+    for (j = 0; j < blocks; j++) { //find the largest signature
       prod = pixy.blocks[j].width * pixy.blocks[j].height;
       if (prod > maxProd) {
         maxProd = prod;
@@ -372,8 +333,6 @@ void CheckBlocks() {
       }
     }
 
-    //if ((pixy.blocks[maxJ].width > minWidth) && ((pixy.blocks[maxJ].width < lineWidth) && (pixy.blocks[maxJ].height < lineHeight))) { // if color sig is big enough and object is detected by the IR sensor
-    //    if (pixy.blocks[maxJ].width > minWidth) {
     maxSig = pixy.blocks[maxJ].signature;
     max_X = pixy.blocks[maxJ].x;
     max_Y = pixy.blocks[maxJ].y;
@@ -383,23 +342,25 @@ void CheckBlocks() {
     //    Serial.print("Block Position: ");
     //    Serial.print(max_X);
     //    Serial.print("     ");
-    //    Serial.print("Block Dimensions: ");
+    //    Serial.print("Block Width: ");
     //    Serial.print(maxWidth);
     //    Serial.print(" x ");
     //    Serial.println(maxWidth);
-    Serial.print("Error: ");
-    Serial.println(camError);
-
-    BlockColor();
-    tracking = 1;
-    scanning = 0;
-    digitalWrite(GREEN, HIGH);
-    digitalWrite(YELLOW, LOW);
-    TrackBlock();
+    // Serial.print("Error: ");
+    // Serial.println(camError);
+    IR_Check();
+    int checkDist = 1500 / irShortDist;
+    //if (((800 / irShortDist) < pixy.blocks[maxJ].width) && ((1400 / irShortDist) > pixy.blocks[maxJ].width)) {
+    if ((checkDist > pixy.blocks[maxJ].width) && (checkDist > pixy.blocks[maxJ].height)) {
+      BlockColor();
+      digitalWrite(GREEN, HIGH);
+      digitalWrite(YELLOW, LOW);
+      TrackBlock();
+    }
   }
 
   else {
-    Serial.println("None");
+    //Serial.println("None");
     //    digitalWrite(RED, LOW);    // LED
     //    digitalWrite(YELLOW, LOW);    // LED
     //    digitalWrite(GREEN, LOW);    // LED
@@ -407,25 +368,10 @@ void CheckBlocks() {
 
 
     //DriveForward();
-    tracking = 0;
-    scanning = 1;
     digitalWrite(GREEN, LOW);
     digitalWrite(YELLOW, HIGH);
-    Scan();
+    //Scan();
   }
-
-  //  Serial.print("Block Position: (");
-  //  Serial.print(max_X, max_Y);
-  //  Serial.println(")");
-  //  Serial.print("Block Dimensions: ");
-  //  Serial.print(maxWidth);
-  //  Serial.print(" x ");
-  //  Serial.println(maxWidth);
-
-  //Serial.print("maxWidth: "); Serial.println(maxWidth);
-  //Serial.print("irFrontDist: "); Serial.println(irFrontDist);
-
-  // delay(30);
 }
 
 
@@ -439,18 +385,19 @@ void TrackBlock()
   /*Compute all the working error variables*/
 
 
-  if (trackTimeChange < 20) {
-    camError = camSP - max_X;
-    camErrSum += (camError * trackTimeChange);
-    camdErr = (camError - prevCamError) / trackTimeChange;
-  }
-  else {
-    camError = 0;
-    camErrSum = 0;
-    camdErr = 0;
-  }
+  //  if (trackTimeChange < 50) {
+  //    camError = camSP - max_X;
+  //    camErrSum += (camError * trackTimeChange);
+  //    camdErr = (camError - prevCamError) / trackTimeChange;
+  //  }
+  //  else {
+  camError = camSP - max_X;
+  //    camErrSum = 0;
+  //    camdErr = 0;
+  //  }
   /*Compute PID Output*/
-  panAdjust = panKp * camError + panKi * camErrSum + panKd * camdErr;
+  //panAdjust = panKp * camError + panKi * camErrSum + panKd * camdErr;
+  panAdjust = panKp * camError;
 
   panPos = constrain(panPos + panAdjust, panMin, panMax);
   camServo.write(panPos);
