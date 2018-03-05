@@ -72,8 +72,8 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 void setup() {
   servoL.attach(8);  // attaches left wheel servo on pin 8
   servoR.attach(9);  // attaches right wheel servo on pin 9
-  // blockServoL.attach(10); // attaches left block servo on pin 10
-  // blockServoR.attach(11); // attaches right block servo on pin 11
+  blockServoL.attach(11); // attaches left block servo on pin 10
+  blockServoR.attach(10); // attaches right block servo on pin 11
 
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
@@ -86,8 +86,8 @@ void setup() {
 
   // sets servo initial positions
 
-  // blockServoL.write(45);
-  // blockServoR.write(135);
+  blockServoL.write(90);
+  blockServoR.write(90);
   servoL.write(92);
   servoR.write(92);
   delay(2000);
@@ -107,12 +107,21 @@ void loop() {
     delay (400);
     DriveStop();
     delay (100);
+    GrabBlock();
+    while (quadrant =! homeQuad){
+      DriveForward();
+    }
+    DriveForward(); 
+    delay (500);
+    ReleaseBlock();
+    DriveReverse();
+    delay (400);
     
   }
   
   if (irShortDist > CAPTURED) {
     digitalWrite(WHITE, LOW);    // LED
-    CheckBlocks();
+    CheckBlocks();}
 
   else {
     CheckBlocks();

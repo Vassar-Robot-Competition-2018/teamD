@@ -217,17 +217,16 @@ void HoldingBlock() {
     DriveForward();
 }
 
-
-//void BlockComplete() {
-//  speedL = 0;
-//  speedR = 0;
-//  MotorUpdate(speedL, speedR);
-//  BlockColor();
-//  digitalWrite(WHITE, HIGH);    // LED
-//  //  Serial.print("maxWidth: "); Serial.println(maxWidth);
-//  //  Serial.print("irPixyDist: "); Serial.println(irPixyDist);
-//  delay(5000);
-//}
+void BlockComplete() {
+  speedL = 0;
+  speedR = 0;
+  MotorUpdate(speedL, speedR);
+  BlockColor();
+  digitalWrite(WHITE, HIGH);    // LED
+  //  Serial.print("maxWidth: "); Serial.println(maxWidth);
+  //  Serial.print("irPixyDist: "); Serial.println(irPixyDist);
+  delay(5000);
+}
 
 
 void MotorUpdate(double L, double R) {
@@ -303,7 +302,7 @@ void CheckBlocks() {
     if (blocks) { //if a color sig is detected by pixy cam
       for (j = 0; j < blocks; j++) { //find the largest signature
         if (pixy.blocks[j].signature == homeQuad) {
-      //    digitalWrite(WHITE, HIGH);
+          //    digitalWrite(WHITE, HIGH);
           prod = pixy.blocks[j].width * pixy.blocks[j].height;
           if (prod > maxProd) {
             maxProd = prod;
@@ -351,7 +350,7 @@ void CheckBlocks() {
   }
   else {
     DriveForward();
- //   digitalWrite(WHITE, LOW);
+    //   digitalWrite(WHITE, LOW);
     //digitalWrite(RED, LOW);    // LED
   }
 }
