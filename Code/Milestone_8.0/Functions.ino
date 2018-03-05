@@ -196,15 +196,15 @@ void DriveStop() {
 
 
 void GrabBlock() {
-  blockServoL.write(135);
-  blockServoR.write(45);
+  blockServoL.write(67);
+  blockServoR.write(120);
   delay(1000);
 }
 
 
 void ReleaseBlock() {
-  blockServoL.write(135);
-  blockServoR.write(45);
+  blockServoL.write(94);
+  blockServoR.write(100);
   DriveReverse();
   delay(2000);
   RightTurn();

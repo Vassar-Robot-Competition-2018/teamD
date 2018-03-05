@@ -72,8 +72,8 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 void setup() {
   servoL.attach(8);  // attaches left wheel servo on pin 8
   servoR.attach(9);  // attaches right wheel servo on pin 9
-  blockServoL.attach(11); // attaches left block servo on pin 10
-  blockServoR.attach(10); // attaches right block servo on pin 11
+  blockServoL.attach(22); // attaches left block servo on pin 22
+  blockServoR.attach(23); // attaches right block servo on pin 23
 
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
@@ -86,8 +86,8 @@ void setup() {
 
   // sets servo initial positions
 
-  blockServoL.write(90);
-  blockServoR.write(90);
+  blockServoL.write(94); //L starts at 94
+  blockServoR.write(100); //R starts at 100
   servoL.write(92);
   servoR.write(92);
   delay(2000);
@@ -97,10 +97,7 @@ void setup() {
 void loop() {
   ColorSensor();
   IR_Check();
-
-  //    Serial.print("IR Distance: ");
-  //    Serial.println(irShortDist);
-
+  
   if (((irShortDist < CAPTURED) || (irPixyDist < 15)) && (maxSig != 6)) { //Block Captured 
     digitalWrite(WHITE, HIGH);    // LED
     DriveForward(); 
@@ -114,7 +111,6 @@ void loop() {
     DriveForward(); 
     delay (500);
     ReleaseBlock();
-    DriveReverse();
     delay (400);
     
   }
@@ -125,7 +121,7 @@ void loop() {
 
   else {
     CheckBlocks();
-  }
+  } 
 }
 
 
