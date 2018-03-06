@@ -34,13 +34,12 @@ float kp = 0.5,
       kd = 0.1,
 
       irShort,
-      irPixy,
       irLeft,
       irRight,
-      irShortDist,
-      irPixyDist,
-      irLeftDist,
-      irRightDist;
+      ShortIR,
+      PixyIR,
+      LeftIR,
+      RightIR;
 
 int Cgray,
     Rgray,
@@ -72,8 +71,8 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 void setup() {
   servoL.attach(8);  // attaches left wheel servo on pin 8
   servoR.attach(9);  // attaches right wheel servo on pin 9
-  blockServoL.attach(22); // attaches left block servo on pin 22
-  blockServoR.attach(23); // attaches right block servo on pin 23
+  blockServoL.attach(11); // attaches left block servo on pin 22
+  blockServoR.attach(10); // attaches right block servo on pin 23
 
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
@@ -98,24 +97,25 @@ void loop() {
   ColorSensor();
   IR_Check();
   
-  if (((irShortDist < CAPTURED) || (irPixyDist < 15)) && (maxSig != 6)) { //Block Captured 
+  if (((ShortIR < CAPTURED) || (PixyIR < 15)) && (maxSig != 6)) { //Block Captured 
     digitalWrite(WHITE, HIGH);    // LED
     DriveForward(); 
-    delay (400);
+    delay (1200);
     DriveStop();
-    delay (100);
+    delay (300);
     GrabBlock();
     while (quadrant =! homeQuad){
       DriveForward();
     }
-    DriveForward(); 
-    delay (500);
-    ReleaseBlock();
-    delay (400);
-    
+    if (quadrant == homeQuad) {
+      DriveForward();
+      delay (1200);
+      ReleaseBlock();
+      delay (400); 
+    }
   }
   
-  if (irShortDist > CAPTURED) {
+  if (ShortIR > CAPTURED) {
     digitalWrite(WHITE, LOW);    // LED
     CheckBlocks();}
 
