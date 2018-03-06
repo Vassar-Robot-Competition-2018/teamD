@@ -56,6 +56,7 @@ void Quadrant(int r, int g, int b) {
   //  Serial.print("Quadrant color: ");
   //  Serial.println(quadrant);
 
+  HomQuadrantLED();
   QuadrantLED();
 }
 
@@ -83,7 +84,7 @@ void WhiteCheck(int c) {
 }
 
 
-void QuadrantLED() {
+void HomQuadrantLED() {
   if (homeQuad == 1) {
     //Serial.println("Red");
     digitalWrite(RED, HIGH);    // LED
@@ -115,13 +116,52 @@ void QuadrantLED() {
     digitalWrite(GREEN, LOW);    // LED
     digitalWrite(BLUE, HIGH);    // LED
   }
-
   else {
     digitalWrite(RED, LOW);    // LED
     digitalWrite(YELLOW, LOW);    // LED
     digitalWrite(GREEN, LOW);    // LED
     digitalWrite(BLUE, LOW);    // LED
   }
+}
+void QuadrantLED() {
+  if (quadrant == 1) {
+    //Serial.println("Red");
+    digitalWrite(RED, HIGH);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
+  }
+
+  else if (quadrant == 2) {
+    //Serial.println("Yellow");
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, HIGH);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
+  }
+
+  else if (quadrant == 3) {
+    //Serial.println("Green");
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, HIGH);    // LED
+    digitalWrite(BLUE, LOW);    // LED
+  }
+
+  else if (quadrant == 4) {
+    //Serial.println("Blue");
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, HIGH);    // LED
+  }
+  else {
+    digitalWrite(RED, LOW);    // LED
+    digitalWrite(YELLOW, LOW);    // LED
+    digitalWrite(GREEN, LOW);    // LED
+    digitalWrite(BLUE, LOW);    // LED
+  }
+
 }
 
 
@@ -198,7 +238,7 @@ void DriveStop() {
 void GrabBlock() {
   blockServoL.write(67);
   blockServoR.write(120);
-  delay(1000);
+  delay(2000);
 }
 
 
@@ -213,7 +253,7 @@ void ReleaseBlock() {
 
 
 void HoldingBlock() {
-  if (irShortDist <= CAPTURED)
+  if (ShortIR <= CAPTURED)
     DriveForward();
 }
 
@@ -224,7 +264,7 @@ void BlockComplete() {
   BlockColor();
   digitalWrite(WHITE, HIGH);    // LED
   //  Serial.print("maxWidth: "); Serial.println(maxWidth);
-  //  Serial.print("irPixyDist: "); Serial.println(irPixyDist);
+  //  Serial.print("PixyIR: "); Serial.println(PixyIR);
   delay(5000);
 }
 
@@ -245,40 +285,132 @@ void IR_Check()
   IR_Right();
 }
 
-
 void IR_Short() {
-  irShort = analogRead(IR_SHORT);
-  irShortDist = 3187.58 / irShort - 1.6016;
-  irShortDist = constrain(irShortDist, 3, 30);
-  Serial.print("Short IR: ");
-  Serial.println(irShortDist);
-}
+  double ShortPrev;
+  double ShortSum;
 
+  for (int i = 0; i <= 10; i++) {
+    double ShortRaw = analogRead(IR_SHORT);
+    if (abs(ShortRaw - ShortPrev) > 100) {
+      double ShortTemp = ShortRaw;
+      ShortRaw = ShortPrev;
+      ShortPrev = ShortTemp;
+    }
+    else {
+      ShortPrev = ShortRaw;
+    }
+    ShortSum += ShortRaw;
+
+    if (i == 9) {
+      double ShortAvg = ShortSum / 10;
+      //Serial.println(avg);
+      ShortIR = 3040.4 / ShortAvg - 1.18;
+      if (ShortIR > 25) {
+        ShortIR = 100;
+      }
+
+      Serial.print("Short IR: ");
+      Serial.println();
+      //   delay(100);
+      ShortSum = 0;
+    }
+  }
+}
 
 void IR_Pixy() {
-  irPixy = analogRead(IR_PIXY);
-  irPixyDist = 6206.62 / irPixy - 0.1826;
-  irPixyDist = constrain(irPixyDist, 10, 80);
-  Serial.print("               Pixy IR: ");
-  Serial.println(irPixyDist);
-}
+  double PixyPrev;
+  double PixySum;
 
+  for (int i = 0; i <= 10; i++) {
+    double PixyRaw = analogRead(IR_PIXY);
+    if (abs(PixyRaw - PixyPrev) > 100) {
+      double PixyTemp = PixyRaw;
+      PixyRaw = PixyPrev;
+      PixyPrev = PixyTemp;
+    }
+    else {
+      PixyPrev = PixyRaw;
+    }
+    PixySum += PixyRaw;
+
+    if (i == 9) {
+      double PixyAvg = PixySum / 10;
+      //Serial.println(avg);
+      PixyIR = 7032.25 / PixyAvg - 5.55;
+      if (PixyIR > 36) {
+        PixyIR = 100;
+      }
+
+      Serial.print("Pixy IR: ");
+      Serial.println();
+      //   delay(100);
+      PixySum = 0;
+    }
+  }
+}
 
 void IR_Left() {
-  irLeft = analogRead(IR_LEFT);
-  irLeftDist = 6206.62 / irLeft - 0.1826;
-  irLeftDist = constrain(irLeftDist, 10, 80);
-  Serial.print("                              Left IR: ");
-  Serial.println(irLeftDist);
+  double LeftPrev;
+  double LeftSum;
+
+  for (int i = 0; i <= 10; i++) {
+    double LeftRaw = analogRead(IR_LEFT);
+    if (abs(LeftRaw - LeftPrev) > 100) {
+      double LeftTemp = LeftRaw;
+      LeftRaw = LeftPrev;
+      LeftPrev = LeftTemp;
+    }
+    else {
+      LeftPrev = LeftRaw;
+    }
+    LeftSum += LeftRaw;
+
+    if (i == 9) {
+      double LeftAvg = LeftSum / 10;
+      //Serial.println(avg);
+      LeftIR = 7032.25 / LeftAvg - 5.55;
+      if (LeftIR > 36) {
+        LeftIR = 100;
+      }
+
+      Serial.print("Left IR: ");
+      Serial.println();
+      //   delay(100);
+      LeftSum = 0;
+    }
+  }
 }
 
-
 void IR_Right() {
-  irRight = analogRead(IR_RIGHT);
-  irRightDist = 6206.62 / irRight - 0.1826;
-  irRightDist = constrain(irRightDist, 10, 80);
-  Serial.print("                                             Right IR: ");
-  Serial.println(irRightDist);
+  double RightPrev;
+  double RightSum;
+
+  for (int i = 0; i <= 10; i++) {
+    double RightRaw = analogRead(IR_RIGHT);
+    if (abs(RightRaw - RightPrev) > 100) {
+      double RightTemp = RightRaw;
+      RightRaw = RightPrev;
+      RightPrev = RightTemp;
+    }
+    else {
+      RightPrev = RightRaw;
+    }
+    RightSum += RightRaw;
+
+    if (i == 9) {
+      double RightAvg = RightSum / 10;
+      //Serial.println(avg);
+      RightIR = 7032.25 / RightAvg - 5.55;
+      if (RightIR > 36) {
+        RightIR = 100;
+      }
+
+      Serial.print("Right IR: ");
+      Serial.println();
+      //   delay(100);
+      RightSum = 0;
+    }
+  }
 }
 
 void CheckBlocks() {
@@ -327,10 +459,10 @@ void CheckBlocks() {
       //    Serial.print(" x ");
       //    Serial.println(maxWidth);
 
-      //int checkDist = 1500 / irShortDist;
-      //if (((800 / irShortDist) < pixy.blocks[maxJ].width) && ((1400 / irShortDist) > pixy.blocks[maxJ].width)) {
+      //int checkDist = 1500 / ShortIR;
+      //if (((800 / ShortIR) < pixy.blocks[maxJ].width) && ((1400 / ShortIR) > pixy.blocks[maxJ].width)) {
       //  if ((checkDist > pixy.blocks[maxJ].width) && (checkDist > pixy.blocks[maxJ].height)) {
-      if ((irPixyDist < 30) && (maxSig == homeQuad));
+      if ((PixyIR < 30) && (maxSig == homeQuad));
       //digitalWrite(RED, HIGH);    // LED
       FollowBlock();
     }
