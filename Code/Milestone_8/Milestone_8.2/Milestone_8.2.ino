@@ -87,6 +87,14 @@ void setup() {
 
 void loop() {
   ColorSensor();
+  if(Captured()) {
+    digitalWrite(GREEN, HIGH);
+    digitalWrite(YELLOW, LOW);
+  }
+  if(!(Captured())){
+    digitalWrite(YELLOW, HIGH);
+    digitalWrite(GREEN, LOW);
+  }
  /* IR_Short();
   
   if (Captured()) { //Block Captured 

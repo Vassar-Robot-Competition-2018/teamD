@@ -300,8 +300,9 @@ void IR_Short() {
 
 boolean Captured() {
   if (maxSig != 6) {
-    //    if((maxHeight > 78  && maxHeight < ) && (maxWidth > 85 && maxHeight <  )){
-    return true;
+    if ((maxHeight > 75  && maxHeight < 90) && (maxWidth > 130  && maxHeight <  140)) {
+      return true;
+    }
   }
 
   else return false;
