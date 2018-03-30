@@ -19,7 +19,7 @@ void ColorSensor() { // checks floor color sensor (up to 20 times per second)
     ColorCalibration(clear, red, green, blue);
   }
 
-  WhiteCheck(clear);
+  //WhiteCheck(clear);
   Quadrant(red, green, blue);
 }
 
@@ -299,13 +299,14 @@ void IR_Short() {
 }
 
 boolean Captured() {
-  if(maxSig != 6) {
-    if((maxHeight >  && maxHeight < ) && (maxWidth >  && maxHeight < )){
-      return true;
-    }
+  if (maxSig != 6) {
+    //    if((maxHeight > 78  && maxHeight < ) && (maxWidth > 85 && maxHeight <  )){
+    return true;
   }
+
   else return false;
 }
+
 
 
 void CheckBlocks() {
@@ -338,22 +339,25 @@ void CheckBlocks() {
             max_Y = pixy.blocks[maxJ].y;
             maxHeight = pixy.blocks[maxJ].height;
             maxWidth = pixy.blocks[maxJ].width;
-
+            Serial.print("maxHeight : ");
+            Serial.println(maxHeight);
+            Serial.print("maxWidth : ");
+            Serial.println(maxWidth);
           }
         }
       }
 
-      FollowBlock();
+      //FollowBlock();
       digitalWrite(WHITE, HIGH);
     }
 
     else {
 
-      DriveForward();
+      //DriveForward();
     }
   }
   else {
-    DriveForward();
+    //DriveForward();
     //   digitalWrite(WHITE, LOW);
     //digitalWrite(RED, LOW);    // LED
   }

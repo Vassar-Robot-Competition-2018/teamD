@@ -31,7 +31,7 @@ float kp = 0.5,
       kd = 0.1,
 
       irShort,
-      ShortIR,
+      ShortIR;
 
 int Cgray,
     Rgray,
@@ -87,7 +87,7 @@ void setup() {
 
 void loop() {
   ColorSensor();
-  IR_Short();
+ /* IR_Short();
   
   if (Captured()) { //Block Captured 
     DriveForward(); 
@@ -108,9 +108,9 @@ void loop() {
     }
   }
   
-  else {
+  else { */
     CheckBlocks();
-  } 
+  //} 
 }
 
 
