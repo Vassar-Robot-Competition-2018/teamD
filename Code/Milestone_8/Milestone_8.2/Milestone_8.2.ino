@@ -18,9 +18,6 @@ double timeChange, prevTime, camError, errSum, prevErr, dErr, wheelAdj;
 
 //Declares constants
 const int IR_SHORT = A1,    // A41 has shorter range: 4-30cm
-          IR_PIXY = A2,    // A21 has longer range: 10-80cm
-          IR_LEFT = A3,     // Left IR 10-80cm
-          IR_RIGHT = A4,    // Right IR 10-80cm
           RED = 2,          // assigns Red LED to pin 1
           YELLOW = 3,       // assigns Yellow LED to pin 2
           GREEN = 4,        // assigns Green LED to pin 3
@@ -34,12 +31,7 @@ float kp = 0.5,
       kd = 0.1,
 
       irShort,
-      irLeft,
-      irRight,
       ShortIR,
-      PixyIR,
-      LeftIR,
-      RightIR;
 
 int Cgray,
     Rgray,
@@ -95,30 +87,27 @@ void setup() {
 
 void loop() {
   ColorSensor();
-  IR_Check();
+  IR_Short();
   
-  if (((ShortIR < CAPTURED) || (PixyIR < 15)) && (maxSig != 6)) { //Block Captured 
-    digitalWrite(WHITE, HIGH);    // LED
+  if (Captured()) { //Block Captured 
     DriveForward(); 
     delay (1200);
     DriveStop();
     delay (300);
-    GrabBlock();
+    //GrabBlock();
+    digitalWrite(GREEN, LOW);
     while (quadrant =! homeQuad){
       DriveForward();
     }
     if (quadrant == homeQuad) {
       DriveForward();
-      delay (1200);
-      ReleaseBlock();
+      delay (100);
+      digitalWrite(YELLOW, LOW); 
+      //ReleaseBlock();
       delay (400); 
     }
   }
   
-  if (ShortIR > CAPTURED) {
-    digitalWrite(WHITE, LOW);    // LED
-    CheckBlocks();}
-
   else {
     CheckBlocks();
   } 

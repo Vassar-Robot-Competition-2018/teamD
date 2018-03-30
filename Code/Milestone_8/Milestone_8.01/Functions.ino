@@ -257,17 +257,6 @@ void HoldingBlock() {
     DriveForward();
 }
 
-void BlockComplete() {
-  speedL = 0;
-  speedR = 0;
-  MotorUpdate(speedL, speedR);
-  BlockColor();
-  digitalWrite(WHITE, HIGH);    // LED
-  //  Serial.print("maxWidth: "); Serial.println(maxWidth);
-  //  Serial.print("PixyIR: "); Serial.println(PixyIR);
-  delay(5000);
-}
-
 
 void MotorUpdate(double L, double R) {
   double servoL_speed = (L * (-0.9)) + 92;
@@ -434,7 +423,6 @@ void CheckBlocks() {
     if (blocks) { //if a color sig is detected by pixy cam
       for (j = 0; j < blocks; j++) { //find the largest signature
         if (pixy.blocks[j].signature == homeQuad) {
-          //    digitalWrite(WHITE, HIGH);
           prod = pixy.blocks[j].width * pixy.blocks[j].height;
           if (prod > maxProd) {
             maxProd = prod;
@@ -450,34 +438,13 @@ void CheckBlocks() {
         }
       }
 
-
-      //    Serial.print("Block Position: ");
-      //    Serial.print(max_X);
-      //    Serial.print("     ");
-      //    Serial.print("Block Width: ");
-      //    Serial.print(maxWidth);
-      //    Serial.print(" x ");
-      //    Serial.println(maxWidth);
-
-      //int checkDist = 1500 / ShortIR;
-      //if (((800 / ShortIR) < pixy.blocks[maxJ].width) && ((1400 / ShortIR) > pixy.blocks[maxJ].width)) {
-      //  if ((checkDist > pixy.blocks[maxJ].width) && (checkDist > pixy.blocks[maxJ].height)) {
-      if ((PixyIR < 30) && (maxSig == homeQuad));
-      //digitalWrite(RED, HIGH);    // LED
       FollowBlock();
+      digitalWrite(WHITE, HIGH);
     }
 
     else {
-      //Serial.println("None");
-      //    digitalWrite(RED, LOW);    // LED
-      //    digitalWrite(YELLOW, LOW);    // LED
-      //    digitalWrite(GREEN, LOW);    // LED
-      //    digitalWrite(BLUE, LOW);    // LED
-
 
       DriveForward();
-      //      digitalWrite(GREEN, HIGH);
-      //      digitalWrite(YELLOW, LOW);
     }
   }
   else {
@@ -518,6 +485,7 @@ void FollowBlock()
   //  Serial.println(speedR);
 
   MotorUpdate(speedL, speedR);
+  delay(20);
 }
 
 
