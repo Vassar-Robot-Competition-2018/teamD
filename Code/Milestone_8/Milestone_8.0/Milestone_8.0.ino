@@ -109,7 +109,7 @@ void loop() {
     }
     if (quadrant == homeQuad) {
       DriveForward();
-      delay (1200);
+      delay (100);
       ReleaseBlock();
       delay (400); 
     }

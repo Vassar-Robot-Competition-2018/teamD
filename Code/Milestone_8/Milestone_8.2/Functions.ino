@@ -19,7 +19,7 @@ void ColorSensor() { // checks floor color sensor (up to 20 times per second)
     ColorCalibration(clear, red, green, blue);
   }
 
-  WhiteCheck(clear);
+  //WhiteCheck(clear);
   Quadrant(red, green, blue);
 }
 
@@ -257,17 +257,6 @@ void HoldingBlock() {
     DriveForward();
 }
 
-void BlockComplete() {
-  speedL = 0;
-  speedR = 0;
-  MotorUpdate(speedL, speedR);
-  BlockColor();
-  digitalWrite(WHITE, HIGH);    // LED
-  //  Serial.print("maxWidth: "); Serial.println(maxWidth);
-  //  Serial.print("PixyIR: "); Serial.println(PixyIR);
-  delay(5000);
-}
-
 
 void MotorUpdate(double L, double R) {
   double servoL_speed = (L * (-0.9)) + 92;
@@ -276,14 +265,6 @@ void MotorUpdate(double L, double R) {
   servoR.write(servoR_speed);
 }
 
-
-void IR_Check()
-{
-  IR_Short();
-  IR_Pixy();
-  IR_Left();
-  IR_Right();
-}
 
 void IR_Short() {
   double ShortPrev;
@@ -317,104 +298,19 @@ void IR_Short() {
   }
 }
 
-void IR_Pixy() {
-  double PixyPrev;
-  double PixySum;
-
-  for (int i = 0; i <= 10; i++) {
-    double PixyRaw = analogRead(IR_PIXY);
-    if (abs(PixyRaw - PixyPrev) > 100) {
-      double PixyTemp = PixyRaw;
-      PixyRaw = PixyPrev;
-      PixyPrev = PixyTemp;
-    }
-    else {
-      PixyPrev = PixyRaw;
-    }
-    PixySum += PixyRaw;
-
-    if (i == 9) {
-      double PixyAvg = PixySum / 10;
-      //Serial.println(avg);
-      PixyIR = 7032.25 / PixyAvg - 5.55;
-      if (PixyIR > 36) {
-        PixyIR = 100;
-      }
-
-      Serial.print("Pixy IR: ");
-      Serial.println();
-      //   delay(100);
-      PixySum = 0;
+boolean Captured() {
+  if (maxSig != 6) {
+    if ((maxHeight > 75  && maxHeight < 90) && (maxWidth > 130  && maxHeight <  140)) {
+      return true;
     }
   }
+
+  else return false;
 }
 
-void IR_Left() {
-  double LeftPrev;
-  double LeftSum;
 
-  for (int i = 0; i <= 10; i++) {
-    double LeftRaw = analogRead(IR_LEFT);
-    if (abs(LeftRaw - LeftPrev) > 100) {
-      double LeftTemp = LeftRaw;
-      LeftRaw = LeftPrev;
-      LeftPrev = LeftTemp;
-    }
-    else {
-      LeftPrev = LeftRaw;
-    }
-    LeftSum += LeftRaw;
-
-    if (i == 9) {
-      double LeftAvg = LeftSum / 10;
-      //Serial.println(avg);
-      LeftIR = 7032.25 / LeftAvg - 5.55;
-      if (LeftIR > 36) {
-        LeftIR = 100;
-      }
-
-      Serial.print("Left IR: ");
-      Serial.println();
-      //   delay(100);
-      LeftSum = 0;
-    }
-  }
-}
-
-void IR_Right() {
-  double RightPrev;
-  double RightSum;
-
-  for (int i = 0; i <= 10; i++) {
-    double RightRaw = analogRead(IR_RIGHT);
-    if (abs(RightRaw - RightPrev) > 100) {
-      double RightTemp = RightRaw;
-      RightRaw = RightPrev;
-      RightPrev = RightTemp;
-    }
-    else {
-      RightPrev = RightRaw;
-    }
-    RightSum += RightRaw;
-
-    if (i == 9) {
-      double RightAvg = RightSum / 10;
-      //Serial.println(avg);
-      RightIR = 7032.25 / RightAvg - 5.55;
-      if (RightIR > 36) {
-        RightIR = 100;
-      }
-
-      Serial.print("Right IR: ");
-      Serial.println();
-      //   delay(100);
-      RightSum = 0;
-    }
-  }
-}
 
 void CheckBlocks() {
-  // for (int k = 0; k < 10; k++) {
   static int i = 0;
   uint16_t blocks;
   char buf[32];
@@ -434,7 +330,6 @@ void CheckBlocks() {
     if (blocks) { //if a color sig is detected by pixy cam
       for (j = 0; j < blocks; j++) { //find the largest signature
         if (pixy.blocks[j].signature == homeQuad) {
-          //    digitalWrite(WHITE, HIGH);
           prod = pixy.blocks[j].width * pixy.blocks[j].height;
           if (prod > maxProd) {
             maxProd = prod;
@@ -445,43 +340,25 @@ void CheckBlocks() {
             max_Y = pixy.blocks[maxJ].y;
             maxHeight = pixy.blocks[maxJ].height;
             maxWidth = pixy.blocks[maxJ].width;
-
+            Serial.print("maxHeight : ");
+            Serial.println(maxHeight);
+            Serial.print("maxWidth : ");
+            Serial.println(maxWidth);
           }
         }
       }
 
-
-      //    Serial.print("Block Position: ");
-      //    Serial.print(max_X);
-      //    Serial.print("     ");
-      //    Serial.print("Block Width: ");
-      //    Serial.print(maxWidth);
-      //    Serial.print(" x ");
-      //    Serial.println(maxWidth);
-
-      //int checkDist = 1500 / ShortIR;
-      //if (((800 / ShortIR) < pixy.blocks[maxJ].width) && ((1400 / ShortIR) > pixy.blocks[maxJ].width)) {
-      //  if ((checkDist > pixy.blocks[maxJ].width) && (checkDist > pixy.blocks[maxJ].height)) {
-      if ((PixyIR < 30) && (maxSig == homeQuad));
-      //digitalWrite(RED, HIGH);    // LED
-      FollowBlock();
+      //FollowBlock();
+      digitalWrite(WHITE, HIGH);
     }
 
     else {
-      //Serial.println("None");
-      //    digitalWrite(RED, LOW);    // LED
-      //    digitalWrite(YELLOW, LOW);    // LED
-      //    digitalWrite(GREEN, LOW);    // LED
-      //    digitalWrite(BLUE, LOW);    // LED
 
-
-      DriveForward();
-      //      digitalWrite(GREEN, HIGH);
-      //      digitalWrite(YELLOW, LOW);
+      //DriveForward();
     }
   }
   else {
-    DriveForward();
+    //DriveForward();
     //   digitalWrite(WHITE, LOW);
     //digitalWrite(RED, LOW);    // LED
   }
@@ -518,6 +395,7 @@ void FollowBlock()
   //  Serial.println(speedR);
 
   MotorUpdate(speedL, speedR);
+  delay(20);
 }
 
 
