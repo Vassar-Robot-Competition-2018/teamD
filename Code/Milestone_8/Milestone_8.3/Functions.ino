@@ -86,118 +86,117 @@ void WhiteCheck(int c) {
 void HomeQuadrantLED() {
   if (homeQuad == 1) {
     //Serial.println("Red");
-    digitalWrite(RED, HIGH);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
+    digitalWrite(RED_F, HIGH);    // LED
+    digitalWrite(YELLOW_F, LOW);    // LED
+    digitalWrite(GREEN_F, LOW);    // LED
+    digitalWrite(BLUE_F, LOW);    // LED
   }
 
   else if (homeQuad == 2) {
     //Serial.println("Yellow");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, HIGH);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
+    digitalWrite(RED_F, LOW);    // LED
+    digitalWrite(YELLOW_F, HIGH);    // LED
+    digitalWrite(GREEN_F, LOW);    // LED
+    digitalWrite(BLUE_F, LOW);    // LED
   }
 
   else if (homeQuad == 3) {
     //Serial.println("Green");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, HIGH);    // LED
-    digitalWrite(BLUE, LOW);    // LED
+    digitalWrite(RED_F, LOW);    // LED
+    digitalWrite(YELLOW_F, LOW);    // LED
+    digitalWrite(GREEN_F, HIGH);    // LED
+    digitalWrite(BLUE_F, LOW);    // LED
   }
 
   else if (homeQuad == 4) {
     //Serial.println("Blue");
-    //    digitalWrite(RED, LOW);    // LED
-    //    digitalWrite(YELLOW, LOW);    // LED
-    //    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, HIGH);    // LED
+    digitalWrite(RED_F, LOW);    // LED
+    digitalWrite(YELLOW_F, LOW);    // LED
+    digitalWrite(GREEN_F, LOW);    // LED
+    digitalWrite(BLUE_F, HIGH);    // LED
   }
   else {
-    //    digitalWrite(RED, LOW);    // LED
-    //    digitalWrite(YELLOW, LOW);    // LED
-    //    digitalWrite(GREEN, LOW);    // LED
-    //    digitalWrite(BLUE, LOW);    // LED
+    digitalWrite(RED_F, LOW);    // LED
+    digitalWrite(YELLOW_F, LOW);    // LED
+    digitalWrite(GREEN_F, LOW);    // LED
+    digitalWrite(BLUE_F, LOW);    // LED
   }
 }
 
-void QuadrantLED() {
-  if (quadrant == 1) {
-    //Serial.println("Red");
-    digitalWrite(RED, HIGH);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
+//void QuadrantLED() {
+//  if (quadrant == 1) {
+//    //Serial.println("Red");
+//    digitalWrite(RED_F, HIGH);    // LED
+//    digitalWrite(YELLOW_F, LOW);    // LED
+//    digitalWrite(GREEN_F, LOW);    // LED
+//    digitalWrite(BLUE_F, LOW);    // LED
+//  }
+//
+//  else if (quadrant == 2) {
+//    //Serial.println("Yellow");
+//    digitalWrite(RED_F, LOW);    // LED
+//    digitalWrite(YELLOW_F, HIGH);    // LED
+//    digitalWrite(GREEN_F, LOW);    // LED
+//    digitalWrite(BLUE_F, LOW);    // LED
+//  }
+//
+//  else if (quadrant == 3) {
+//    //Serial.println("Green");
+//    digitalWrite(RED_F, LOW);    // LED
+//    digitalWrite(YELLOW_F, LOW);    // LED
+//    digitalWrite(GREEN_F, HIGH);    // LED
+//    digitalWrite(BLUE_F, LOW);    // LED
+//  }
+//
+//  else if (quadrant == 4) {
+//    //Serial.println("Blue");
+//    digitalWrite(RED_F, LOW);    // LED
+//    digitalWrite(YELLOW_F, LOW);    // LED
+//    digitalWrite(GREEN_F, LOW);    // LED
+//    digitalWrite(BLUE_F, HIGH);    // LED
+//  }
+//  else {
+//    digitalWrite(RED_F, LOW);    // LED
+//    digitalWrite(YELLOW_F, LOW);    // LED
+//    digitalWrite(GREEN_F, LOW);    // LED
+//    digitalWrite(BLUE_F, LOW);    // LED
+//  }
+//}
 
-  else if (quadrant == 2) {
-    //Serial.println("Yellow");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, HIGH);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
 
-  else if (quadrant == 3) {
-    //Serial.println("Green");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, HIGH);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
-
-  else if (quadrant == 4) {
-    //Serial.println("Blue");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, HIGH);    // LED
-  }
-  else {
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
-
-}
-
-
-void BlockColor () {
-  if (maxSig == 1) {
-    //Serial.println("Red");
-    digitalWrite(RED, HIGH);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
-
-  else if (maxSig == 2) {
-    //Serial.println("Yellow");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, HIGH);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
-
-  else if (maxSig == 3) {
-    //Serial.println("Green");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, HIGH);    // LED
-    digitalWrite(BLUE, LOW);    // LED
-  }
-
-  else if (maxSig == 4) {
-    //Serial.println("Blue");
-    digitalWrite(RED, LOW);    // LED
-    digitalWrite(YELLOW, LOW);    // LED
-    digitalWrite(GREEN, LOW);    // LED
-    digitalWrite(BLUE, HIGH);    // LED
-  }
-}
+//void BlockColor () {
+//  if (maxSig == 1) {
+//    //Serial.println("Red");
+//    digitalWrite(RED, HIGH);    // LED
+//    digitalWrite(YELLOW, LOW);    // LED
+//    digitalWrite(GREEN, LOW);    // LED
+//    digitalWrite(BLUE, LOW);    // LED
+//  }
+//
+//  else if (maxSig == 2) {
+//    //Serial.println("Yellow");
+//    digitalWrite(RED, LOW);    // LED
+//    digitalWrite(YELLOW, HIGH);    // LED
+//    digitalWrite(GREEN, LOW);    // LED
+//    digitalWrite(BLUE, LOW);    // LED
+//  }
+//
+//  else if (maxSig == 3) {
+//    //Serial.println("Green");
+//    digitalWrite(RED, LOW);    // LED
+//    digitalWrite(YELLOW, LOW);    // LED
+//    digitalWrite(GREEN, HIGH);    // LED
+//    digitalWrite(BLUE, LOW);    // LED
+//  }
+//
+//  else if (maxSig == 4) {
+//    //Serial.println("Blue");
+//    digitalWrite(RED_B, LOW);    // LED
+//    digitalWrite(YELLOW_B, LOW);    // LED
+//    digitalWrite(GREEN_B, LOW);    // LED
+//    digitalWrite(BLUE_B, HIGH);    // LED
+//  }
+//}
 
 
 void DriveForward() {
@@ -332,19 +331,20 @@ void CheckBlocks() {
       for (j = 0; j < blocks; j++) { //find the largest signature
         if (pixy.blocks[j].signature == homeQuad) {
           prod = pixy.blocks[j].width * pixy.blocks[j].height;
-          if (prod > maxProd) {
-            maxProd = prod;
-            maxJ = j;
-
-            maxSig = pixy.blocks[maxJ].signature;
-            max_X = pixy.blocks[maxJ].x;
-            max_Y = pixy.blocks[maxJ].y;
-            maxHeight = pixy.blocks[maxJ].height;
-            maxWidth = pixy.blocks[maxJ].width;
+          // if (prod > maxProd) {
+          if ((pixy.blocks[j].height > 20) && (pixy.blocks[j].height < 125)) {
+            if ((pixy.blocks[j].height > 20) && (pixy.blocks[j].height < 125)) {
+              //  maxProd = prod;
+              maxJ = j;
+              maxSig = pixy.blocks[maxJ].signature;
+              max_X = pixy.blocks[maxJ].x;
+              max_Y = pixy.blocks[maxJ].y;
+              maxHeight = pixy.blocks[maxJ].height;
+              maxWidth = pixy.blocks[maxJ].width;
+            }
           }
         }
       }
-
       //    Serial.print("Block Position: ");
       //    Serial.print(max_X);
       //    Serial.print("     ");
@@ -360,7 +360,6 @@ void CheckBlocks() {
     else {
       digitalWrite(WHITE, LOW);
       DriveForward();
-
     }
   }
   else {
@@ -407,3 +406,14 @@ void FollowBlock()
   }
 }
 
+
+boolean Captured() {
+  if (maxSig != 6) {
+    //   if (((maxHeight > 80)  && (maxHeight < 125)) && ((maxWidth > 105)  && (maxWidth <  150))) {
+    if ((maxHeight > 80)  && (maxWidth > 105)) {
+    return true;
+  }
+  else return false;
+  }
+else return false;
+}
