@@ -87,39 +87,32 @@ void setup() {
 
 void loop() {
   ColorSensor();
-  if(Captured()) {
-    digitalWrite(GREEN, HIGH);
-    digitalWrite(YELLOW, LOW);
-  }
-  if(!(Captured())){
-    digitalWrite(YELLOW, HIGH);
-    digitalWrite(GREEN, LOW);
-  }
- /* IR_Short();
-  
-  if (Captured()) { //Block Captured 
-    DriveForward(); 
+  //IR_Short();
+
+  if (Captured()) { //Block Captured
+    DriveForward();
     delay (1200);
     DriveStop();
     delay (300);
     //GrabBlock();
-    digitalWrite(GREEN, LOW);
-    while (quadrant =! homeQuad){
+    digitalWrite(WHITE, HIGH);
+    while (quadrant = ! homeQuad) {
       DriveForward();
     }
     if (quadrant == homeQuad) {
       DriveForward();
       delay (100);
-      digitalWrite(YELLOW, LOW); 
+      digitalWrite(WHITE, LOW);
       //ReleaseBlock();
-      delay (400); 
+      delay (400);
+    }
+
+
+    else {
+      CheckBlocks();
+      }
     }
   }
-  
-  else { */
-    CheckBlocks();
-  //} 
-}
 
 
 
