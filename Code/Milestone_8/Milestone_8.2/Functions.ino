@@ -300,9 +300,10 @@ void IR_Short() {
 
 boolean Captured() {
   if (maxSig != 6) {
-    if ((maxHeight > 75  && maxHeight < 90) && (maxWidth > 130  && maxHeight <  140)) {
+    if (((maxHeight > 80)  && (maxHeight < 125)) && ((maxWidth > 105)  && (maxWidth <  150))) {
       return true;
     }
+    else return false;
   }
 
   else return false;
@@ -342,7 +343,7 @@ void CheckBlocks() {
             maxWidth = pixy.blocks[maxJ].width;
             Serial.print("maxHeight : ");
             Serial.println(maxHeight);
-            Serial.print("maxWidth : ");
+            Serial.print("             maxWidtH : ");
             Serial.println(maxWidth);
           }
         }
