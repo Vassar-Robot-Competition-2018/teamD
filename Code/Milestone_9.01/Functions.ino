@@ -442,7 +442,7 @@ void CheckBlocks() {
   max_X = camSP;
   max_Y = 0;
   maxWidth = 0;
-  maxHeight = 0;
+  maxHeight = 0; 
   prod = 0;
   maxProd = 0;
 
@@ -477,11 +477,17 @@ void CheckBlocks() {
 
       //    digitalWrite(WHITE, HIGH);    // LED
       FollowBlock();
+      if(maxSig == homeQuad){
+        UpdateArms(0, 0);
+      }
     }
 
     else {
       //   digitalWrite(WHITE, LOW);
       DriveForward();
+      if (maxSig != homeQuad) {
+        UpdateArms(100, 100);
+      }
     }
   }
   else {

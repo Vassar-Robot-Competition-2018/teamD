@@ -83,6 +83,8 @@ int LC_gray, LR_gray, LG_gray, LB_gray,
     baseSpeedR = 50,
     increment = 8,
     initial = 1,
+    mxSgCntrX = 0,
+    mxSgCntr = 0,
     camSP = 160;      // pixy cam setpoint for PID;
 
 
@@ -158,9 +160,6 @@ void setup() {
 
 void loop() {
   ColorSensor();
-  if(maxSig == homeQuad){
-    UpdateArms(0, 0);
-  }
   if (Captured()) { //Block Captured
     Grab();
     while (quadrant != homeQuad) {
@@ -169,7 +168,7 @@ void loop() {
     }
     Release();
     delay (2000);
-  }
+  }  
   else {
     CheckBlocks();
     digitalWrite(RED_B, LOW);

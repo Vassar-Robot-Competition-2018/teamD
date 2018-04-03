@@ -158,9 +158,6 @@ void setup() {
 
 void loop() {
   ColorSensor();
-  if(maxSig == homeQuad){
-    UpdateArms(0, 0);
-  }
   if (Captured()) { //Block Captured
     Grab();
     while (quadrant != homeQuad) {
@@ -169,7 +166,7 @@ void loop() {
     }
     Release();
     delay (2000);
-  }
+  }  
   else {
     CheckBlocks();
     digitalWrite(RED_B, LOW);

@@ -477,6 +477,20 @@ void CheckBlocks() {
 
       //    digitalWrite(WHITE, HIGH);    // LED
       FollowBlock();
+      if(maxSig == homeQuad){
+        mxSgCntr += 1;
+      }
+      if (mxSgCntr == 2) {
+        UpdateArms(0, 0);
+        mxSgCntr = 0;
+      }
+      if (maxSig != homeQuad) {
+        mxSgCntrX +=1;
+      }
+      if (mxSgCntrX == 4) {
+        UpdateArms(100, 100);
+        mxSgCntrX = 0;
+      }
     }
 
     else {
