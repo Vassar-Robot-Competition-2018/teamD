@@ -64,8 +64,9 @@ void ColorSensor() { // checks floor color sensor (up to 20 times per second)
 
 
 void SetHome(int r, int g, int b) { // sets home quadrant
-  if ((homeQuad == 5) && (quadrant != 0)) {
-    homeQuad = quadrant;
+  if ((Home == 5) && (quadrant != 0)) {
+    Home = quadrant;
+    Cap_Rel_Table ();
   }
 }
 
@@ -75,10 +76,10 @@ void Quadrant(int r, int g, int b) {
     quadrant = 1;
 
   else if ((r + g) > (4 * b))  //yellow
-    quadrant = 2;
+    quadrant = 3;
 
   else if ((3 * g) > ((r + b) * 2))  //green
-    quadrant = 3;
+    quadrant = 2;
 
   else if (b > (2 * r))  //blue
     quadrant = 4;
@@ -91,7 +92,7 @@ void Quadrant(int r, int g, int b) {
   }
 
   //  Serial.print("Home Quadrant: ");
-  //  Serial.print(homeQuad);
+  //  Serial.print(Home);
   //  Serial.print("Quadrant color: ");
   //  Serial.println(quadrant);
 
@@ -208,12 +209,12 @@ void CheckBlocks() {
   prod = 0;
   maxProd = 0;
 
-  if (homeQuad != quadrant) {
+  if (Home != quadrant) {
     blocks = pixy.getBlocks();
 
     if (blocks) { //if a color sig is detected by pixy cam
       for (j = 0; j < blocks; j++) { //find the largest signature
-        if (pixy.blocks[j].signature == homeQuad) {
+        if (pixy.blocks[j].signature == Home) {
           prod = pixy.blocks[j].width * pixy.blocks[j].height;
           // if (prod > maxProd) {
           if ((pixy.blocks[j].height > 20) && (pixy.blocks[j].height < 125)) {
@@ -239,7 +240,7 @@ void CheckBlocks() {
 
       //    digitalWrite(WHITE, HIGH);    // LED
       FollowBlock();
-      if(maxSig == homeQuad){
+      if(maxSig == Home){
         UpdateArms(0, 0);
       }
     }
@@ -247,7 +248,7 @@ void CheckBlocks() {
     else {
       //   digitalWrite(WHITE, LOW);
       DriveForward();
-      if (maxSig != homeQuad) {
+      if (maxSig != Home) {
         UpdateArms(100, 100);
       }
     }
@@ -260,7 +261,7 @@ void CheckBlocks() {
 
 void FollowBlock()
 {
-  //  if (maxSig == homeQuad) {
+  //  if (maxSig == Home) {
   //    camSP = 160;
   //  }
   //  else {
