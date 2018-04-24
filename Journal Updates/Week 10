@@ -1,0 +1,17 @@
+Upload 2.0
+
+Our robot this week has undergone a series of cosmetic changes, as well as some practical physical ones.
+The main difference in the chassis was the introduction of solid black panels as well as a few metal connecting posts for the sides.
+This can be found in github marked under Robot V5, and V5 Above. 
+This change in body, which was inspired heavily from Jonathan's Minibot, also resulted in a reduced form factor. 
+This was taken another step further when the size of the claws and forward body were shrunk down.  
+
+We adjusted the design of our claws, and its primary guide located on the underside of the front chassis, in order to combat a violent shaking that was present in the micro servos. 
+Having made new design changes, including limiting the length of the arms, we have opted to replace the worn micro servos in exchange for newer versions. 
+
+We also will be updating our captured block function soon, as our minimum distance has decreased due to our new body design. 
+
+The differences in our navigation this week came with the implementation of the magnetometer into our mini bot navigation experiments. 
+This was to derive our directional impulses from a sense of cardinal directional movement , rather than using cues from sensor impulses from quadrant tape. 
+This experiment took up the entirety of our time on Tuesday but has still proved inconsistent as a replacement for our adjusted idea of correctional movement.
+It has not moved on to  be in our official main code body.
