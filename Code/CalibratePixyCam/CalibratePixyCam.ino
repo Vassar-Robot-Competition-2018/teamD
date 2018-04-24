@@ -1,4 +1,3 @@
-//9.2 find home
 
 #include <SPI.h>
 #include <Pixy.h>
@@ -70,6 +69,7 @@ int LC_gray, LR_gray, LG_gray, LB_gray,
     quadrant = 0,
     tempQuad = 0,
     prevQuad,
+    homeQuad = 5,
     servoPos = 0,
     servoMin = -100,
     servoMax = 100,
@@ -81,17 +81,12 @@ int LC_gray, LR_gray, LG_gray, LB_gray,
     baseSpeedR = 50,
     increment = 8,
     initial = 1,
-    Home = 5, 
-    Neutral_1 = 1, 
-    Enemy = 2, 
-    Neutral_2 = 3,
-
     camSP = 160;      // pixy cam setpoint for PID;
 
 
 /* initialize L and R color sensors with specific integration time, gain values and custom SDA / SCL pin */
-Adafruit_TCS34725softi2c tcsL = Adafruit_TCS34725softi2c(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_1X, SDApinL, SCLpinL);
-Adafruit_TCS34725softi2c tcsR = Adafruit_TCS34725softi2c(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_1X, SDApinR, SCLpinR);
+Adafruit_TCS34725softi2c tcsL = Adafruit_TCS34725softi2c(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X, SDApinL, SCLpinL);
+Adafruit_TCS34725softi2c tcsR = Adafruit_TCS34725softi2c(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X, SDApinR, SCLpinR);
 
 /* initialize servo driver */
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
@@ -121,9 +116,9 @@ void setup() {
   delay(10);
 
   // sets servo initial positions
-  MotorUpdate(0, 0);
-  UpdatePan(0);
-  UpdateArms(100, 100);
+  //  MotorUpdate(0, 0);
+  //  UpdatePan(0);
+  //UpdateArms(100, 100);
   delay(2000);
 
   digitalWrite(RED_B, HIGH);
@@ -155,29 +150,58 @@ void setup() {
   digitalWrite(BLUE_F, LOW);
   delay(1000);
 
-  ColorSensor();
+  //ColorSensor();
 }
 
 
 void loop() {
-  ColorSensor();
-  while (quadrant != Home) {
-      GoHome();
-    }
-    digitalWrite(RED_B, HIGH);
-  /*if (Captured()) { //Block Captured
-    Grab();
-    while (quadrant != Home) {
-      GoHome();
-    }
-    Release();
-    delay (2000);
-  }  
-  else {
-    CheckBlocks();
-    digitalWrite(RED_B, LOW);
-    digitalWrite(YELLOW_B, LOW);
-    digitalWrite(GREEN_B, LOW);
-    digitalWrite(BLUE_B, LOW);
-  } */
+  CheckBlocks();
 }
+
+void CheckBlocks() {
+  // for (int k = 0; k < 10; k++) {
+  static int i = 0;
+  uint16_t blocks;
+  char buf[32];
+
+  maxJ = 0;
+  maxSig = 6;
+  max_X = camSP;
+  max_Y = 0;
+  maxWidth = 0;
+  maxHeight = 0;
+  prod = 0;
+  maxProd = 0;
+  blocks = pixy.getBlocks();
+
+  if (blocks) { //if a color sig is detected by pixy cam
+    for (j = 0; j < blocks; j++) { //find the largest signature
+      prod = pixy.blocks[j].width * pixy.blocks[j].height;
+      // if (prod > maxProd) {
+      if ((pixy.blocks[j].height > 20) && (pixy.blocks[j].height < 125)) {
+        if ((pixy.blocks[j].height > 20) && (pixy.blocks[j].height < 125))
+          //  maxProd = prod;
+          maxJ = j;
+        maxSig = pixy.blocks[maxJ].signature;
+        max_X = pixy.blocks[maxJ].x;
+        max_Y = pixy.blocks[maxJ].y;
+        maxHeight = pixy.blocks[maxJ].height;
+        maxWidth = pixy.blocks[maxJ].width;
+
+        Serial.println("Block Height: ");
+        Serial.print(maxHeight);
+
+
+
+        
+        Serial.print("         ");
+        Serial.print("Block Width: ");
+        Serial.println(maxWidth);
+
+      }
+    }
+
+  }
+}
+
+
