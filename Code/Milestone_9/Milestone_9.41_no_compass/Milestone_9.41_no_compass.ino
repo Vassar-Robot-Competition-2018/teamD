@@ -33,16 +33,16 @@ LSM303 compass;
 #define PAN_SERVO  2  // camera panning servo
 #define L_WHEEL  4    // left wheel servo
 #define R_WHEEL  5    // right wheel servo
-#define PAN_MIN  225 // 250 (-100 mapped) far LEFT; 350 (0 mapped) is STRAIGHT FWD
-#define PAN_MAX  450 // 450 (100 mapped) far RIGHT 
-#define L_ARM_MIN  340 // 350 is OPEN (0 mapped)
-#define L_ARM_MAX  362 // 375 is CLOSED (100 mapped)
-#define R_ARM_MIN  314 // 328 is CLOSED (100 mapped)
-#define R_ARM_MAX  342 // 355 is OPEN (0 mapped)
-#define L_WHEEL_MIN  223 // 238 (100 mapped) full FORWARD; 360 is STOPPED (0 mapped)
-#define L_WHEEL_MAX  467 // 482 (-100 mapped) full REVERSE;
-#define R_WHEEL_MIN  223 // 238 (-100 mapped) full REVERSE; 360 is STOPPED (0 mapped)
-#define R_WHEEL_MAX  467 // 482 (100 mapped) full FORWARD,
+#define PAN_MIN  240 // 250 (-100 mapped) far LEFT; 350 (0 mapped) is STRAIGHT FWD
+#define PAN_MAX  455 // 450 (100 mapped) far RIGHT 
+#define L_ARM_MIN  410 // 350 is OPEN (0 mapped)
+#define L_ARM_MAX  435 // 375 is CLOSED (100 mapped)
+#define R_ARM_MIN  320 // 328 is CLOSED (100 mapped)
+#define R_ARM_MAX  350 // 355 is OPEN (0 mapped)
+#define L_WHEEL_MIN  220 // 238 (100 mapped) full FORWARD; 360 is STOPPED (0 mapped)
+#define L_WHEEL_MAX  500 // 482 (-100 mapped) full REVERSE;
+#define R_WHEEL_MIN  220 // 238 (-100 mapped) full REVERSE; 360 is STOPPED (0 mapped)
+#define R_WHEEL_MAX  500 // 482 (100 mapped) full FORWARD,
 
 
 //Declares constants
