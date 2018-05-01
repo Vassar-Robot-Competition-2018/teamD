@@ -1,0 +1,13 @@
+coverage: 
+
+This week served as a time to see a number of breakthroughs in the way our robot functions. Our V5 chassis seems to be our last iteration as there were no physical changes since last week. 
+
+Our time of flight range sensor was swapped out for a more close proximity edition and it has served much better as a discriminator between captured and free blocks. The range is much more limited by comparison, but its closer proximity provides much more usable data. 
+
+We also changed our motors to run through VIN outputs, so our output speed has increased exponentially. We are quote "cruisin now". 
+
+We have also spent some changing the calibration of our PID, specifically focusing on our D values. (INCLUDE CODE SELECTION).
+
+Sunday night served as a large turning point for our code as a significant portion of our logic had been expanded upon and narrowed down in other areas. (INCLUDE 2 SECTIONS OF CHANGES)
+
+Things are looking good for our upcoming competition, and we have made some really good strides these last couple of weeks. Our final change might come in the form of a physical change to the robots exterior to make it more aesthetically pleasing to coincide with our groups adopted theme of The Beatles
