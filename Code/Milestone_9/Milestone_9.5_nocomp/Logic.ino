@@ -287,8 +287,9 @@ void Status_3() {
     }
   }
   else {
-    UpdateArms(100, 100);
-    UpdateWheels(highSpeed, highSpeed);
+    //UpdateArms(100, 100);
+    //UpdateWheels(highSpeed, highSpeed);
+    DriveForward();
   }
   oldQuad = quadrant;
 }
