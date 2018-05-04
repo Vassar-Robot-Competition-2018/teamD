@@ -315,7 +315,7 @@ void Scan() {
 bool Captured() {
   // if (((maxHeight > 80)  && (maxWidth > 105)) || (TOF_distance < 80)) {
   //Serial.println(TOF_distance);
-  if (TOF_distance < 40) {
+  if (TOF_distance < 33) {
     return true;
   }
   else return false;
