@@ -6,6 +6,8 @@
 #include <SoftwareWire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include "Adafruit_TCS34725softi2c.h"
+#include "Adafruit_VL53L0X.h"
+#include <Adafruit_VL6180X.h>
 
 Pixy pixy;          // main Pixy object
 Servo servoL;       // left motor
@@ -44,7 +46,7 @@ const int IR_SHORT = A1,    // A41 has shorter range: 4-30cm
           wheelInterval = 20; // time between PID updates
 unsigned long current, lastWheelUpdate;
 double timeChange, prevTime, camError, errSum, prevErr, dErr, wheelAdj;
-
+double TOF_distance, TOFdist, raw_dist, prev_dist, temp_dist;
 float kp = 0.3,
       ki = 0.0,
       kd = 0.1,
@@ -91,6 +93,8 @@ Adafruit_TCS34725softi2c tcsR = Adafruit_TCS34725softi2c(TCS34725_INTEGRATIONTIM
 /* initialize servo driver */
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
+/* initialize time of flight (distance) sensor */
+Adafruit_VL6180X vl = Adafruit_VL6180X(); // low range TOF sensor
 void setup() {
   servoL.attach(8);  // attaches left wheel servo on pin 8
   servoR.attach(9);  // attaches right wheel servo on pin 9
@@ -114,6 +118,11 @@ void setup() {
   pwm.begin();
   pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
   delay(10);
+   Serial.println("Adafruit VL6180x test!");
+  if (! vl.begin()) {
+    Serial.println("Failed to find sensor");
+    while (1);
+  }
 
   // sets servo initial positions
   //  MotorUpdate(0, 0);
@@ -156,8 +165,15 @@ void setup() {
 
 void loop() {
   CheckBlocks();
+  TOF();
+  delay(250);
 }
 
+void TOF(){
+  uint8_t range = vl.readRange();
+   Serial.print("TOF:");
+   Serial.println(range);
+}
 void CheckBlocks() {
   // for (int k = 0; k < 10; k++) {
   static int i = 0;
@@ -188,16 +204,12 @@ void CheckBlocks() {
         maxHeight = pixy.blocks[maxJ].height;
         maxWidth = pixy.blocks[maxJ].width;
 
-        Serial.println("Block Height: ");
+        Serial.print("Block Height: ");
         Serial.print(maxHeight);
-
-
-
-        
         Serial.print("         ");
         Serial.print("Block Width: ");
-        Serial.println(maxWidth);
-
+        Serial.print(maxWidth);
+        Serial.print("         ");
       }
     }
 
